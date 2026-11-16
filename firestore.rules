@@ -1,0 +1,327 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // 0. Global Default-Deny Safety Net
+    match /{document=**} {
+      allow read, write: if false;
+    }
+
+    // Global Primitives
+    function isValidId(id) {
+      return id is string && id.size() >= 1 && id.size() <= 128 && id.matches('^[a-zA-Z0-9_\\-]+$');
+    }
+
+    function incoming() {
+      return request.resource.data;
+    }
+
+    function existing() {
+      return resource.data;
+    }
+
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    function isVerifiedUser() {
+      return isSignedIn() && request.auth.token.email_verified == true;
+    }
+
+    function isOwner(userId) {
+      return isSignedIn() && request.auth.uid == userId;
+    }
+
+    function isAdmin() {
+      return isSignedIn() && (
+        (request.auth.token.email == 'mustaphashehuyana@gmail.com' && request.auth.token.email_verified == true) ||
+        (exists(/databases/$(database)/documents/user_roles/$(request.auth.uid)) &&
+         get(/databases/$(database)/documents/user_roles/$(request.auth.uid)).data.role == 'super_admin')
+      );
+    }
+
+    function isBranchAdmin() {
+      return isSignedIn() &&
+        exists(/databases/$(database)/documents/user_roles/$(request.auth.uid)) &&
+        get(/databases/$(database)/documents/user_roles/$(request.auth.uid)).data.role == 'branch_admin';
+    }
+
+    function isBoundedList() {
+      return request.query.limit == null || request.query.limit <= 500;
+    }
+
+    // Validation Blueprints
+    function isValidCity(data) {
+      return data.keys().hasAll(['name', 'is_active']) &&
+        data.keys().hasOnly(['id', 'name', 'is_active', 'created_at', 'updated_at', 'sort_order']) &&
+        data.name is string && data.name.size() >= 1 && data.name.size() <= 80 &&
+        data.is_active is bool &&
+        (!('id' in data) || (data.id is string && data.id.size() <= 128)) &&
+        (!('created_at' in data) || (data.created_at is string && data.created_at.size() <= 50)) &&
+        (!('updated_at' in data) || (data.updated_at is string && data.updated_at.size() <= 50)) &&
+        (!('sort_order' in data) || data.sort_order is number);
+    }
+
+    function isValidCurrency(data) {
+      return data.keys().hasAll(['code', 'name', 'is_active']) &&
+        data.keys().hasOnly(['id', 'code', 'name', 'flag_url', 'is_active', 'created_at', 'updated_at', 'sort_order']) &&
+        data.code is string && data.code.size() >= 2 && data.code.size() <= 6 &&
+        data.name is string && data.name.size() >= 1 && data.name.size() <= 80 &&
+        data.is_active is bool &&
+        (!('id' in data) || (data.id is string && data.id.size() <= 128)) &&
+        (!('flag_url' in data) || (data.flag_url is string && data.flag_url.size() <= 300)) &&
+        (!('created_at' in data) || (data.created_at is string && data.created_at.size() <= 50)) &&
+        (!('updated_at' in data) || (data.updated_at is string && data.updated_at.size() <= 50)) &&
+        (!('sort_order' in data) || data.sort_order is number);
+    }
+
+    function isValidBranch(data) {
+      return data.keys().hasAll(['city_id', 'name', 'address', 'operating_hours', 'is_active']) &&
+        data.keys().hasOnly([
+          'id', 'city_id', 'name', 'address', 'whatsapp_number',
+          'operating_hours', 'rating', 'review_count', 'latitude', 'longitude',
+          'is_active', 'created_at', 'updated_at'
+        ]) &&
+        data.city_id is string && data.city_id.size() >= 1 && data.city_id.size() <= 128 &&
+        data.name is string && data.name.size() >= 1 && data.name.size() <= 120 &&
+        data.address is string && data.address.size() >= 1 && data.address.size() <= 300 &&
+        data.operating_hours is string && data.operating_hours.size() >= 1 && data.operating_hours.size() <= 120 &&
+        data.is_active is bool &&
+        (!('id' in data) || (data.id is string && data.id.size() <= 128)) &&
+        (!('whatsapp_number' in data) || data.whatsapp_number == null || (data.whatsapp_number is string && data.whatsapp_number.size() <= 40)) &&
+        (!('rating' in data) || (data.rating is number && data.rating >= 0 && data.rating <= 5)) &&
+        (!('review_count' in data) || (data.review_count is number && data.review_count >= 0)) &&
+        (!('latitude' in data) || data.latitude == null || (data.latitude is number && data.latitude >= -90 && data.latitude <= 90)) &&
+        (!('longitude' in data) || data.longitude == null || (data.longitude is number && data.longitude >= -180 && data.longitude <= 180)) &&
+        (!('created_at' in data) || (data.created_at is string && data.created_at.size() <= 50)) &&
+        (!('updated_at' in data) || (data.updated_at is string && data.updated_at.size() <= 50));
+    }
+
+    function isValidBranchRate(data) {
+      return data.keys().hasAll(['branch_id', 'currency_id', 'buy_rate', 'sell_rate']) &&
+        data.keys().hasOnly([
+          'id', 'branch_id', 'currency_id', 'denomination',
+          'buy_rate', 'sell_rate', 'updated_by', 'updated_at', 'created_at'
+        ]) &&
+        data.branch_id is string && data.branch_id.size() >= 1 && data.branch_id.size() <= 128 &&
+        data.currency_id is string && data.currency_id.size() >= 1 && data.currency_id.size() <= 128 &&
+        data.buy_rate is number && data.buy_rate >= 0 && data.buy_rate <= 1000000 &&
+        data.sell_rate is number && data.sell_rate >= 0 && data.sell_rate <= 1000000 &&
+        (!('id' in data) || (data.id is string && data.id.size() <= 128)) &&
+        (!('denomination' in data) || data.denomination == null || (data.denomination is string && data.denomination.size() <= 50)) &&
+        (!('updated_by' in data) || data.updated_by == null || (data.updated_by is string && data.updated_by.size() <= 128)) &&
+        (!('updated_at' in data) || (data.updated_at is string && data.updated_at.size() <= 50)) &&
+        (!('created_at' in data) || (data.created_at is string && data.created_at.size() <= 50));
+    }
+
+    function isValidRateAlert(data) {
+      return data.keys().hasAll(['subscription_id', 'currency', 'target_rate', 'alert_type', 'enabled']) &&
+        data.keys().hasOnly([
+          'id', 'subscription_id', 'currency', 'target_rate', 'alert_type',
+          'branch_id', 'branch_name', 'enabled', 'created_at', 'updated_at', 'triggered_at'
+        ]) &&
+        data.subscription_id is string && data.subscription_id.size() >= 1 && data.subscription_id.size() <= 128 &&
+        data.currency is string && data.currency.size() >= 2 && data.currency.size() <= 10 &&
+        data.target_rate is number && data.target_rate > 0 && data.target_rate <= 1000000 &&
+        data.alert_type in ['above', 'below'] &&
+        data.enabled is bool &&
+        (!('id' in data) || (data.id is string && data.id.size() <= 128)) &&
+        (!('branch_id' in data) || data.branch_id == null || (data.branch_id is string && data.branch_id.size() <= 128)) &&
+        (!('branch_name' in data) || data.branch_name == null || (data.branch_name is string && data.branch_name.size() <= 120)) &&
+        (!('created_at' in data) || (data.created_at is string && data.created_at.size() <= 50)) &&
+        (!('updated_at' in data) || (data.updated_at is string && data.updated_at.size() <= 50)) &&
+        (!('triggered_at' in data) || data.triggered_at == null || (data.triggered_at is string && data.triggered_at.size() <= 50));
+    }
+
+    function isValidPushSubscription(data) {
+      return data.keys().hasAll(['endpoint', 'p256dh', 'auth']) &&
+        data.keys().hasOnly(['id', 'endpoint', 'p256dh', 'auth', 'created_at', 'updated_at']) &&
+        data.endpoint is string && data.endpoint.size() >= 1 && data.endpoint.size() <= 500 &&
+        data.p256dh is string && data.p256dh.size() >= 1 && data.p256dh.size() <= 200 &&
+        data.auth is string && data.auth.size() >= 1 && data.auth.size() <= 200 &&
+        (!('id' in data) || (data.id is string && data.id.size() <= 128)) &&
+        (!('created_at' in data) || (data.created_at is string && data.created_at.size() <= 50)) &&
+        (!('updated_at' in data) || (data.updated_at is string && data.updated_at.size() <= 50));
+    }
+
+    function isValidNotificationLog(data) {
+      return data.keys().hasAll(['title', 'body', 'target_type', 'sent_count', 'success_count', 'failure_count']) &&
+        data.keys().hasOnly([
+          'id', 'title', 'body', 'target_type', 'target_city_id',
+          'sent_count', 'success_count', 'failure_count', 'sent_by', 'sent_at', 'created_at'
+        ]) &&
+        data.title is string && data.title.size() >= 1 && data.title.size() <= 120 &&
+        data.body is string && data.body.size() >= 1 && data.body.size() <= 500 &&
+        data.target_type in ['all', 'city'] &&
+        data.sent_count is number && data.sent_count >= 0 &&
+        data.success_count is number && data.success_count >= 0 &&
+        data.failure_count is number && data.failure_count >= 0 &&
+        (!('id' in data) || (data.id is string && data.id.size() <= 128)) &&
+        (!('target_city_id' in data) || data.target_city_id == null || (data.target_city_id is string && data.target_city_id.size() <= 128)) &&
+        (!('sent_by' in data) || data.sent_by == null || (data.sent_by is string && data.sent_by.size() <= 128)) &&
+        (!('sent_at' in data) || (data.sent_at is string && data.sent_at.size() <= 50)) &&
+        (!('created_at' in data) || (data.created_at is string && data.created_at.size() <= 50));
+    }
+
+    function isValidUserRole(data) {
+      return data.keys().hasAll(['user_id', 'role']) &&
+        data.keys().hasOnly(['id', 'user_id', 'role', 'created_at', 'updated_at']) &&
+        data.user_id is string && data.user_id.size() >= 1 && data.user_id.size() <= 128 &&
+        data.role in ['super_admin', 'branch_admin'] &&
+        (!('id' in data) || (data.id is string && data.id.size() <= 128)) &&
+        (!('created_at' in data) || (data.created_at is string && data.created_at.size() <= 50)) &&
+        (!('updated_at' in data) || (data.updated_at is string && data.updated_at.size() <= 50));
+    }
+
+    function isValidBranchAdmin(data) {
+      return data.keys().hasAll(['user_id', 'branch_id']) &&
+        data.keys().hasOnly(['id', 'user_id', 'branch_id', 'assigned_at', 'created_at', 'updated_at']) &&
+        data.user_id is string && data.user_id.size() >= 1 && data.user_id.size() <= 128 &&
+        data.branch_id is string && data.branch_id.size() >= 1 && data.branch_id.size() <= 128 &&
+        (!('id' in data) || (data.id is string && data.id.size() <= 128)) &&
+        (!('assigned_at' in data) || (data.assigned_at is string && data.assigned_at.size() <= 50)) &&
+        (!('created_at' in data) || (data.created_at is string && data.created_at.size() <= 50)) &&
+        (!('updated_at' in data) || (data.updated_at is string && data.updated_at.size() <= 50));
+    }
+
+    function isValidProfile(data) {
+      return data.keys().hasAll(['email']) &&
+        data.keys().hasOnly(['id', 'email', 'full_name', 'created_at', 'updated_at']) &&
+        data.email is string && data.email.size() >= 3 && data.email.size() <= 160 &&
+        (!('id' in data) || (data.id is string && data.id.size() <= 128)) &&
+        (!('full_name' in data) || data.full_name == null || (data.full_name is string && data.full_name.size() <= 120)) &&
+        (!('created_at' in data) || (data.created_at is string && data.created_at.size() <= 50)) &&
+        (!('updated_at' in data) || (data.updated_at is string && data.updated_at.size() <= 50));
+    }
+
+    function isValidReview(data) {
+      return data.keys().hasAll(['branch_id', 'userId', 'userName', 'rating', 'comment', 'date', 'helpful']) &&
+        data.keys().hasOnly(['id', 'branch_id', 'userId', 'userName', 'rating', 'comment', 'date', 'helpful', 'created_at', 'updated_at']) &&
+        data.branch_id is string && data.branch_id.size() >= 1 && data.branch_id.size() <= 128 &&
+        data.userId is string && data.userId.size() >= 1 && data.userId.size() <= 128 &&
+        data.userName is string && data.userName.size() >= 1 && data.userName.size() <= 80 &&
+        data.rating is number && data.rating >= 1 && data.rating <= 5 &&
+        data.comment is string && data.comment.size() >= 1 && data.comment.size() <= 500 &&
+        data.date is string && data.date.size() >= 1 && data.date.size() <= 40 &&
+        data.helpful is number && data.helpful >= 0 &&
+        (!('id' in data) || (data.id is string && data.id.size() <= 128)) &&
+        (!('created_at' in data) || (data.created_at is string && data.created_at.size() <= 50)) &&
+        (!('updated_at' in data) || (data.updated_at is string && data.updated_at.size() <= 50));
+    }
+
+    // 1. Cities Collection (Public read + initial bootstrap create, Admin update/delete)
+    match /cities/{cityId} {
+      allow get: if isValidId(cityId);
+      allow list: if isBoundedList();
+      allow create: if isValidId(cityId) && isValidCity(incoming());
+      allow update: if isValidId(cityId) && isValidCity(incoming()) && isAdmin() &&
+        incoming().diff(existing()).affectedKeys().hasOnly(['name', 'is_active', 'updated_at', 'sort_order']);
+      allow delete: if isValidId(cityId) && isAdmin();
+    }
+
+    // 2. Currencies Collection (Public read + initial bootstrap create, Admin update/delete)
+    match /currencies/{currencyId} {
+      allow get: if isValidId(currencyId);
+      allow list: if isBoundedList();
+      allow create: if isValidId(currencyId) && isValidCurrency(incoming());
+      allow update: if isValidId(currencyId) && isValidCurrency(incoming()) && isAdmin() &&
+        incoming().diff(existing()).affectedKeys().hasOnly(['code', 'name', 'flag_url', 'is_active', 'updated_at', 'sort_order']);
+      allow delete: if isValidId(currencyId) && isAdmin();
+    }
+
+    // 3. Branches Collection (Public read + initial bootstrap create, Admin/BranchAdmin update/delete)
+    match /branches/{branchId} {
+      allow get: if isValidId(branchId);
+      allow list: if isBoundedList();
+      allow create: if isValidId(branchId) && isValidBranch(incoming());
+      allow update: if isValidId(branchId) && isValidBranch(incoming()) && (isAdmin() || isBranchAdmin()) &&
+        incoming().diff(existing()).affectedKeys().hasOnly([
+          'city_id', 'name', 'address', 'whatsapp_number',
+          'operating_hours', 'rating', 'review_count', 'latitude', 'longitude',
+          'is_active', 'updated_at'
+        ]);
+      allow delete: if isValidId(branchId) && isAdmin();
+    }
+
+    // 4. Branch Rates Collection (Public read + initial bootstrap create, Admin or Branch Admin update/delete)
+    match /branch_rates/{rateId} {
+      allow get: if isValidId(rateId);
+      allow list: if isBoundedList();
+      allow create: if isValidId(rateId) && isValidBranchRate(incoming());
+      allow update: if isValidId(rateId) && isValidBranchRate(incoming()) && (isAdmin() || isBranchAdmin()) &&
+        incoming().diff(existing()).affectedKeys().hasOnly([
+          'branch_id', 'currency_id', 'denomination', 'buy_rate', 'sell_rate', 'updated_by', 'updated_at'
+        ]);
+      allow delete: if isValidId(rateId) && (isAdmin() || isBranchAdmin());
+    }
+
+    // 5. Rate Alerts Collection (Scoped by subscription_id)
+    match /rate_alerts/{alertId} {
+      allow get: if isValidId(alertId);
+      allow list: if isBoundedList();
+      allow create: if isValidId(alertId) && isValidRateAlert(incoming());
+      allow update: if isValidId(alertId) && isValidRateAlert(incoming()) &&
+        incoming().diff(existing()).affectedKeys().hasOnly(['enabled', 'target_rate', 'alert_type', 'updated_at', 'triggered_at']);
+      allow delete: if isValidId(alertId);
+    }
+
+    // 6. Push Subscriptions Collection
+    match /push_subscriptions/{subId} {
+      allow get: if isValidId(subId);
+      allow list: if isBoundedList();
+      allow create: if isValidId(subId) && isValidPushSubscription(incoming());
+      allow update: if isValidId(subId) && isValidPushSubscription(incoming()) &&
+        incoming().diff(existing()).affectedKeys().hasOnly(['endpoint', 'p256dh', 'auth', 'updated_at']);
+      allow delete: if isValidId(subId);
+    }
+
+    // 7. Notification Logs Collection (Admin only)
+    match /notification_logs/{logId} {
+      allow get: if isValidId(logId) && isAdmin();
+      allow list: if isAdmin() && isBoundedList();
+      allow create: if isValidId(logId) && isValidNotificationLog(incoming()) && isAdmin();
+      allow update: if isValidId(logId) && isValidNotificationLog(incoming()) && isAdmin() &&
+        incoming().diff(existing()).affectedKeys().hasOnly(['sent_count', 'success_count', 'failure_count']);
+      allow delete: if isValidId(logId) && isAdmin();
+    }
+
+    // 8. User Roles Collection (Owner can read own role, Admin manages roles)
+    match /user_roles/{roleId} {
+      allow get: if isValidId(roleId) && isSignedIn() && (roleId == request.auth.uid || resource == null || resource.data.user_id == request.auth.uid || isAdmin());
+      allow list: if isSignedIn() && isBoundedList();
+      allow create: if isValidId(roleId) && isValidUserRole(incoming()) && (isAdmin() || (isOwner(roleId) && incoming().user_id == request.auth.uid));
+      allow update: if isValidId(roleId) && isValidUserRole(incoming()) && isAdmin() &&
+        incoming().diff(existing()).affectedKeys().hasOnly(['role', 'updated_at']);
+      allow delete: if isValidId(roleId) && isAdmin();
+    }
+
+    // 9. Branch Admins Collection (Authenticated read, Admin manages)
+    match /branch_admins/{assignmentId} {
+      allow get: if isValidId(assignmentId) && isSignedIn();
+      allow list: if isSignedIn() && isBoundedList();
+      allow create: if isValidId(assignmentId) && isValidBranchAdmin(incoming()) && isAdmin();
+      allow update: if isValidId(assignmentId) && isValidBranchAdmin(incoming()) && isAdmin() &&
+        incoming().diff(existing()).affectedKeys().hasOnly(['branch_id', 'updated_at']);
+      allow delete: if isValidId(assignmentId) && isAdmin();
+    }
+
+    // 10. Profiles Collection (PII Isolated to Owner or Admin)
+    match /profiles/{userId} {
+      allow get: if isValidId(userId) && (isOwner(userId) || isAdmin());
+      allow list: if isAdmin() && isBoundedList();
+      allow create: if isValidId(userId) && isValidProfile(incoming()) && (isOwner(userId) || isAdmin());
+      allow update: if isValidId(userId) && isValidProfile(incoming()) && (isOwner(userId) || isAdmin()) &&
+        incoming().diff(existing()).affectedKeys().hasOnly(['email', 'full_name', 'updated_at']);
+      allow delete: if isValidId(userId) && isAdmin();
+    }
+
+    // 11. Reviews Collection (Public read, validated public write)
+    match /reviews/{reviewId} {
+      allow get: if isValidId(reviewId);
+      allow list: if isBoundedList();
+      allow create: if isValidId(reviewId) && isValidReview(incoming());
+      allow update: if isValidId(reviewId) && isValidReview(incoming()) &&
+        incoming().diff(existing()).affectedKeys().hasOnly(['helpful', 'updated_at']);
+      allow delete: if isValidId(reviewId) && isAdmin();
+    }
+  }
+}

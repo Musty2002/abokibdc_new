@@ -1,0 +1,6 @@
+{
+  "name": "Aboki BDC - Bureau De Change Rates Nigeria",
+  "description": "Get real-time BDC and CBN exchange rates across Nigeria. Compare rates from multiple Bureau De Change offices in Lagos, Abuja, Port Harcourt, Kano, and more.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

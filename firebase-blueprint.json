@@ -1,0 +1,202 @@
+{
+  "entities": {
+    "City": {
+      "title": "City",
+      "description": "Operating city location for BDC branches",
+      "type": "object",
+      "properties": {
+        "name": { "type": "string", "minLength": 1, "maxLength": 80 },
+        "is_active": { "type": "boolean" },
+        "created_at": { "type": "string", "maxLength": 50 }
+      },
+      "required": ["name", "is_active"]
+    },
+    "Currency": {
+      "title": "Currency",
+      "description": "Supported foreign currency metadata and flag URL",
+      "type": "object",
+      "properties": {
+        "code": { "type": "string", "minLength": 2, "maxLength": 6 },
+        "name": { "type": "string", "minLength": 1, "maxLength": 80 },
+        "flag_url": { "type": "string", "minLength": 0, "maxLength": 300 },
+        "is_active": { "type": "boolean" },
+        "created_at": { "type": "string", "maxLength": 50 }
+      },
+      "required": ["code", "name", "is_active"]
+    },
+    "Branch": {
+      "title": "Branch",
+      "description": "Aboki BDC physical branch office",
+      "type": "object",
+      "properties": {
+        "city_id": { "type": "string", "minLength": 1, "maxLength": 128 },
+        "name": { "type": "string", "minLength": 1, "maxLength": 120 },
+        "address": { "type": "string", "minLength": 1, "maxLength": 300 },
+        "whatsapp_number": { "type": "string", "minLength": 0, "maxLength": 40 },
+        "operating_hours": { "type": "string", "minLength": 1, "maxLength": 120 },
+        "rating": { "type": "number" },
+        "review_count": { "type": "number" },
+        "latitude": { "type": "number" },
+        "longitude": { "type": "number" },
+        "is_active": { "type": "boolean" },
+        "created_at": { "type": "string", "maxLength": 50 },
+        "updated_at": { "type": "string", "maxLength": 50 }
+      },
+      "required": ["city_id", "name", "address", "operating_hours", "is_active"]
+    },
+    "BranchRate": {
+      "title": "BranchRate",
+      "description": "Buy and sell exchange rate for a currency at a specific branch",
+      "type": "object",
+      "properties": {
+        "branch_id": { "type": "string", "minLength": 1, "maxLength": 128 },
+        "currency_id": { "type": "string", "minLength": 1, "maxLength": 128 },
+        "denomination": { "type": "string", "minLength": 0, "maxLength": 50 },
+        "buy_rate": { "type": "number" },
+        "sell_rate": { "type": "number" },
+        "updated_by": { "type": "string", "minLength": 0, "maxLength": 128 },
+        "updated_at": { "type": "string", "maxLength": 50 }
+      },
+      "required": ["branch_id", "currency_id", "buy_rate", "sell_rate"]
+    },
+    "RateAlert": {
+      "title": "RateAlert",
+      "description": "User subscription alert for a target exchange rate threshold",
+      "type": "object",
+      "properties": {
+        "subscription_id": { "type": "string", "minLength": 1, "maxLength": 128 },
+        "currency": { "type": "string", "minLength": 2, "maxLength": 10 },
+        "target_rate": { "type": "number" },
+        "alert_type": { "type": "string", "enum": ["above", "below"] },
+        "branch_id": { "type": "string", "minLength": 0, "maxLength": 128 },
+        "branch_name": { "type": "string", "minLength": 0, "maxLength": 120 },
+        "enabled": { "type": "boolean" },
+        "created_at": { "type": "string", "maxLength": 50 }
+      },
+      "required": ["subscription_id", "currency", "target_rate", "alert_type", "enabled"]
+    },
+    "PushSubscription": {
+      "title": "PushSubscription",
+      "description": "Web or mobile push notification subscription endpoint",
+      "type": "object",
+      "properties": {
+        "endpoint": { "type": "string", "minLength": 1, "maxLength": 500 },
+        "p256dh": { "type": "string", "minLength": 1, "maxLength": 200 },
+        "auth": { "type": "string", "minLength": 1, "maxLength": 200 },
+        "created_at": { "type": "string", "maxLength": 50 }
+      },
+      "required": ["endpoint", "p256dh", "auth"]
+    },
+    "NotificationLog": {
+      "title": "NotificationLog",
+      "description": "Broadcast push notification audit log",
+      "type": "object",
+      "properties": {
+        "title": { "type": "string", "minLength": 1, "maxLength": 120 },
+        "body": { "type": "string", "minLength": 1, "maxLength": 500 },
+        "target_type": { "type": "string", "enum": ["all", "city"] },
+        "target_city_id": { "type": "string", "minLength": 0, "maxLength": 128 },
+        "sent_count": { "type": "number" },
+        "success_count": { "type": "number" },
+        "failure_count": { "type": "number" },
+        "sent_by": { "type": "string", "minLength": 0, "maxLength": 128 },
+        "sent_at": { "type": "string", "maxLength": 50 }
+      },
+      "required": ["title", "body", "target_type", "sent_count", "success_count", "failure_count"]
+    },
+    "UserRole": {
+      "title": "UserRole",
+      "description": "Role assignment for super_admin or branch_admin users",
+      "type": "object",
+      "properties": {
+        "user_id": { "type": "string", "minLength": 1, "maxLength": 128 },
+        "role": { "type": "string", "enum": ["super_admin", "branch_admin"] },
+        "created_at": { "type": "string", "maxLength": 50 }
+      },
+      "required": ["user_id", "role"]
+    },
+    "BranchAdmin": {
+      "title": "BranchAdmin",
+      "description": "Mapping assigning a branch_admin user to a specific branch",
+      "type": "object",
+      "properties": {
+        "user_id": { "type": "string", "minLength": 1, "maxLength": 128 },
+        "branch_id": { "type": "string", "minLength": 1, "maxLength": 128 },
+        "assigned_at": { "type": "string", "maxLength": 50 }
+      },
+      "required": ["user_id", "branch_id"]
+    },
+    "Profile": {
+      "title": "Profile",
+      "description": "Administrator user profile information",
+      "type": "object",
+      "properties": {
+        "email": { "type": "string", "minLength": 3, "maxLength": 160 },
+        "full_name": { "type": "string", "minLength": 0, "maxLength": 120 },
+        "created_at": { "type": "string", "maxLength": 50 }
+      },
+      "required": ["email"]
+    },
+    "Review": {
+      "title": "Review",
+      "description": "Customer review for a BDC branch",
+      "type": "object",
+      "properties": {
+        "branch_id": { "type": "string", "minLength": 1, "maxLength": 128 },
+        "userId": { "type": "string", "minLength": 1, "maxLength": 128 },
+        "userName": { "type": "string", "minLength": 1, "maxLength": 80 },
+        "rating": { "type": "number" },
+        "comment": { "type": "string", "minLength": 1, "maxLength": 500 },
+        "date": { "type": "string", "minLength": 1, "maxLength": 40 },
+        "helpful": { "type": "number" }
+      },
+      "required": ["branch_id", "userId", "userName", "rating", "comment", "date", "helpful"]
+    }
+  },
+  "firestore": {
+    "/cities/{cityId}": {
+      "schema": { "$ref": "#/entities/City" },
+      "description": "Operating cities for Aboki BDC branches"
+    },
+    "/currencies/{currencyId}": {
+      "schema": { "$ref": "#/entities/Currency" },
+      "description": "Supported foreign currencies and flag icons"
+    },
+    "/branches/{branchId}": {
+      "schema": { "$ref": "#/entities/Branch" },
+      "description": "Physical Bureau De Change branch offices"
+    },
+    "/branch_rates/{rateId}": {
+      "schema": { "$ref": "#/entities/BranchRate" },
+      "description": "Buy and sell exchange rates per branch and currency"
+    },
+    "/rate_alerts/{alertId}": {
+      "schema": { "$ref": "#/entities/RateAlert" },
+      "description": "Customer rate alerts scoped by subscription_id"
+    },
+    "/push_subscriptions/{subId}": {
+      "schema": { "$ref": "#/entities/PushSubscription" },
+      "description": "Push notification device/browser subscriptions"
+    },
+    "/notification_logs/{logId}": {
+      "schema": { "$ref": "#/entities/NotificationLog" },
+      "description": "Admin broadcast notification history"
+    },
+    "/user_roles/{roleId}": {
+      "schema": { "$ref": "#/entities/UserRole" },
+      "description": "Admin role records (super_admin, branch_admin)"
+    },
+    "/branch_admins/{assignmentId}": {
+      "schema": { "$ref": "#/entities/BranchAdmin" },
+      "description": "Branch administrator branch assignments"
+    },
+    "/profiles/{userId}": {
+      "schema": { "$ref": "#/entities/Profile" },
+      "description": "Admin user profiles containing email and full_name (PII isolated to owner or admin)"
+    },
+    "/reviews/{reviewId}": {
+      "schema": { "$ref": "#/entities/Review" },
+      "description": "Public customer reviews for BDC branches"
+    }
+  }
+}

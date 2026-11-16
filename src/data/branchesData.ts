@@ -1,0 +1,333 @@
+export interface Currency {
+  code: string;
+  flag: string;
+  buyRate: number;
+  sellRate: number;
+  denomination?: string; // e.g., "$1", "$5,$10,$20", "$100+"
+}
+
+export interface Review {
+  id: string;
+  userId: string;
+  userName: string;
+  userAvatar?: string;
+  rating: number;
+  comment: string;
+  date: string;
+  helpful: number;
+}
+
+export interface Branch {
+  id: string;
+  name: string;
+  address: string;
+  city: string;
+  whatsappNumber: string;
+  operatingHours: string;
+  rating: number;
+  reviewCount: number;
+  latitude?: number;
+  longitude?: number;
+  currencies: Currency[];
+}
+
+export interface CityData {
+  city: string;
+  branches: Branch[];
+}
+
+// Default coordinates by branch ID or city name for fallback
+export const DEFAULT_BRANCH_COORDS: Record<string, { lat: number; lng: number }> = {
+  "abuja-wuse": { lat: 9.0667, lng: 7.4833 },
+  "abuja-garki": { lat: 9.0355, lng: 7.4981 },
+  "abuja-maitama": { lat: 9.0882, lng: 7.4934 },
+  "lagos-vi": { lat: 6.4281, lng: 3.4219 },
+  "lagos-ikeja": { lat: 6.5818, lng: 3.3569 },
+  "lagos-lekki": { lat: 6.4474, lng: 3.4723 },
+  "ph-gra": { lat: 4.8156, lng: 7.0085 },
+  "ph-trans-amadi": { lat: 4.8114, lng: 7.0431 },
+  "kano-sabon-gari": { lat: 12.0126, lng: 8.5322 },
+  "kaduna-barnawa": { lat: 10.4789, lng: 7.4294 },
+  "bauchi-main": { lat: 10.3103, lng: 9.8439 },
+};
+
+export const DEFAULT_CITY_COORDS: Record<string, { lat: number; lng: number }> = {
+  ABUJA: { lat: 9.0667, lng: 7.4833 },
+  LAGOS: { lat: 6.4281, lng: 3.4219 },
+  "PORT HARCOURT": { lat: 4.8156, lng: 7.0085 },
+  KANO: { lat: 12.0126, lng: 8.5322 },
+  KADUNA: { lat: 10.4789, lng: 7.4294 },
+  BAUCHI: { lat: 10.3103, lng: 9.8439 },
+};
+
+export function getBranchCoordinates(branch: {
+  id?: string;
+  city?: string;
+  latitude?: number | null;
+  longitude?: number | null;
+}): { lat: number; lng: number } {
+  if (
+    typeof branch.latitude === "number" &&
+    typeof branch.longitude === "number" &&
+    !Number.isNaN(branch.latitude) &&
+    !Number.isNaN(branch.longitude)
+  ) {
+    return { lat: branch.latitude, lng: branch.longitude };
+  }
+  if (branch.id && DEFAULT_BRANCH_COORDS[branch.id]) {
+    return DEFAULT_BRANCH_COORDS[branch.id];
+  }
+  const cityKey = (branch.city || "ABUJA").toUpperCase();
+  return DEFAULT_CITY_COORDS[cityKey] || DEFAULT_CITY_COORDS.ABUJA;
+}
+
+export const branchesData: CityData[] = [
+  {
+    city: "ABUJA",
+    branches: [
+      {
+        id: "abuja-wuse",
+        name: "Wuse Zone 4 Office",
+        address: "Plot 123, Wuse Zone 4, Behind Sheraton Hotel, Abuja",
+        city: "ABUJA",
+        whatsappNumber: "2348012345678",
+        operatingHours: "Mon-Fri: 8AM-5PM, Sat: 9AM-2PM",
+        rating: 4.5,
+        reviewCount: 128,
+        latitude: 9.0667,
+        longitude: 7.4833,
+        currencies: [
+          { code: "USD", flag: "🇺🇸", buyRate: 1580, sellRate: 1620, denomination: "$100+" },
+          { code: "USD", flag: "🇺🇸", buyRate: 1550, sellRate: 1620, denomination: "$1" },
+          { code: "USD", flag: "🇺🇸", buyRate: 1560, sellRate: 1620, denomination: "$5,$10,$20" },
+          { code: "EUR", flag: "🇪🇺", buyRate: 1680, sellRate: 1720 },
+          { code: "GBP", flag: "🇬🇧", buyRate: 1950, sellRate: 2000 },
+          { code: "CAD", flag: "🇨🇦", buyRate: 1150, sellRate: 1180 },
+          { code: "AED", flag: "🇦🇪", buyRate: 425, sellRate: 440 },
+          { code: "CNY", flag: "🇨🇳", buyRate: 215, sellRate: 225 },
+        ],
+      },
+      {
+        id: "abuja-garki",
+        name: "Garki Area 11 Office",
+        address: "No. 45 Ahmadu Bello Way, Garki Area 11, Abuja",
+        city: "ABUJA",
+        whatsappNumber: "2348023456789",
+        operatingHours: "Mon-Fri: 8AM-5PM, Sat: 9AM-3PM",
+        rating: 4.2,
+        reviewCount: 89,
+        latitude: 9.0355,
+        longitude: 7.4981,
+        currencies: [
+          { code: "USD", flag: "🇺🇸", buyRate: 1575, sellRate: 1615, denomination: "$100+" },
+          { code: "USD", flag: "🇺🇸", buyRate: 1545, sellRate: 1615, denomination: "$1" },
+          { code: "USD", flag: "🇺🇸", buyRate: 1555, sellRate: 1615, denomination: "$5,$10,$20" },
+          { code: "EUR", flag: "🇪🇺", buyRate: 1675, sellRate: 1715 },
+          { code: "GBP", flag: "🇬🇧", buyRate: 1945, sellRate: 1995 },
+          { code: "CAD", flag: "🇨🇦", buyRate: 1145, sellRate: 1175 },
+        ],
+      },
+      {
+        id: "abuja-maitama",
+        name: "Maitama Office",
+        address: "25 Aguiyi Ironsi Street, Maitama District, Abuja",
+        city: "ABUJA",
+        whatsappNumber: "2348034567890",
+        operatingHours: "Mon-Fri: 9AM-5PM",
+        rating: 4.8,
+        reviewCount: 156,
+        latitude: 9.0882,
+        longitude: 7.4934,
+        currencies: [
+          { code: "USD", flag: "🇺🇸", buyRate: 1582, sellRate: 1622, denomination: "$100+" },
+          { code: "USD", flag: "🇺🇸", buyRate: 1552, sellRate: 1622, denomination: "$1" },
+          { code: "USD", flag: "🇺🇸", buyRate: 1562, sellRate: 1622, denomination: "$5,$10,$20" },
+          { code: "EUR", flag: "🇪🇺", buyRate: 1682, sellRate: 1722 },
+          { code: "GBP", flag: "🇬🇧", buyRate: 1952, sellRate: 2002 },
+          { code: "CAD", flag: "🇨🇦", buyRate: 1152, sellRate: 1182 },
+          { code: "CHF", flag: "🇨🇭", buyRate: 1780, sellRate: 1830 },
+          { code: "AUD", flag: "🇦🇺", buyRate: 1020, sellRate: 1060 },
+        ],
+      },
+    ],
+  },
+  {
+    city: "LAGOS",
+    branches: [
+      {
+        id: "lagos-vi",
+        name: "Victoria Island Office",
+        address: "15 Adeola Odeku Street, Victoria Island, Lagos",
+        city: "LAGOS",
+        whatsappNumber: "2348045678901",
+        operatingHours: "Mon-Fri: 8AM-6PM, Sat: 9AM-4PM",
+        rating: 4.6,
+        reviewCount: 234,
+        latitude: 6.4281,
+        longitude: 3.4219,
+        currencies: [
+          { code: "USD", flag: "🇺🇸", buyRate: 1575, sellRate: 1615, denomination: "$100+" },
+          { code: "USD", flag: "🇺🇸", buyRate: 1545, sellRate: 1615, denomination: "$1" },
+          { code: "USD", flag: "🇺🇸", buyRate: 1555, sellRate: 1615, denomination: "$5,$10,$20" },
+          { code: "EUR", flag: "🇪🇺", buyRate: 1675, sellRate: 1715 },
+          { code: "GBP", flag: "🇬🇧", buyRate: 1945, sellRate: 1995 },
+          { code: "CAD", flag: "🇨🇦", buyRate: 1145, sellRate: 1175 },
+          { code: "AED", flag: "🇦🇪", buyRate: 420, sellRate: 435 },
+        ],
+      },
+      {
+        id: "lagos-ikeja",
+        name: "Ikeja GRA Office",
+        address: "8 Isaac John Street, Ikeja GRA, Lagos",
+        city: "LAGOS",
+        whatsappNumber: "2348056789012",
+        operatingHours: "Mon-Fri: 8AM-5PM, Sat: 10AM-3PM",
+        rating: 4.3,
+        reviewCount: 167,
+        latitude: 6.5818,
+        longitude: 3.3569,
+        currencies: [
+          { code: "USD", flag: "🇺🇸", buyRate: 1572, sellRate: 1612, denomination: "$100+" },
+          { code: "USD", flag: "🇺🇸", buyRate: 1542, sellRate: 1612, denomination: "$1" },
+          { code: "USD", flag: "🇺🇸", buyRate: 1552, sellRate: 1612, denomination: "$5,$10,$20" },
+          { code: "EUR", flag: "🇪🇺", buyRate: 1672, sellRate: 1712 },
+          { code: "GBP", flag: "🇬🇧", buyRate: 1942, sellRate: 1992 },
+        ],
+      },
+      {
+        id: "lagos-lekki",
+        name: "Lekki Phase 1 Office",
+        address: "Plot 22, Admiralty Way, Lekki Phase 1, Lagos",
+        city: "LAGOS",
+        whatsappNumber: "2348067890123",
+        operatingHours: "Mon-Sat: 9AM-6PM",
+        rating: 4.4,
+        reviewCount: 145,
+        latitude: 6.4474,
+        longitude: 3.4723,
+        currencies: [
+          { code: "USD", flag: "🇺🇸", buyRate: 1578, sellRate: 1618, denomination: "$100+" },
+          { code: "USD", flag: "🇺🇸", buyRate: 1548, sellRate: 1618, denomination: "$1" },
+          { code: "USD", flag: "🇺🇸", buyRate: 1558, sellRate: 1618, denomination: "$5,$10,$20" },
+          { code: "EUR", flag: "🇪🇺", buyRate: 1678, sellRate: 1718 },
+          { code: "GBP", flag: "🇬🇧", buyRate: 1948, sellRate: 1998 },
+          { code: "CAD", flag: "🇨🇦", buyRate: 1148, sellRate: 1178 },
+        ],
+      },
+    ],
+  },
+  {
+    city: "PORT HARCOURT",
+    branches: [
+      {
+        id: "ph-gra",
+        name: "GRA Phase 2 Office",
+        address: "45 Aba Road, GRA Phase 2, Port Harcourt",
+        city: "PORT HARCOURT",
+        whatsappNumber: "2348078901234",
+        operatingHours: "Mon-Fri: 8AM-5PM",
+        rating: 4.1,
+        reviewCount: 78,
+        latitude: 4.8156,
+        longitude: 7.0085,
+        currencies: [
+          { code: "USD", flag: "🇺🇸", buyRate: 1570, sellRate: 1610, denomination: "$100+" },
+          { code: "USD", flag: "🇺🇸", buyRate: 1540, sellRate: 1610, denomination: "$1" },
+          { code: "USD", flag: "🇺🇸", buyRate: 1550, sellRate: 1610, denomination: "$5,$10,$20" },
+          { code: "EUR", flag: "🇪🇺", buyRate: 1670, sellRate: 1710 },
+          { code: "GBP", flag: "🇬🇧", buyRate: 1940, sellRate: 1990 },
+          { code: "CAD", flag: "🇨🇦", buyRate: 1140, sellRate: 1170 },
+        ],
+      },
+      {
+        id: "ph-trans-amadi",
+        name: "Trans Amadi Office",
+        address: "12 Trans Amadi Industrial Layout, Port Harcourt",
+        city: "PORT HARCOURT",
+        whatsappNumber: "2348089012345",
+        operatingHours: "Mon-Fri: 9AM-4PM",
+        rating: 3.9,
+        reviewCount: 45,
+        latitude: 4.8114,
+        longitude: 7.0431,
+        currencies: [
+          { code: "USD", flag: "🇺🇸", buyRate: 1568, sellRate: 1608, denomination: "$100+" },
+          { code: "USD", flag: "🇺🇸", buyRate: 1538, sellRate: 1608, denomination: "$1" },
+          { code: "USD", flag: "🇺🇸", buyRate: 1548, sellRate: 1608, denomination: "$5,$10,$20" },
+          { code: "EUR", flag: "🇪🇺", buyRate: 1668, sellRate: 1708 },
+        ],
+      },
+    ],
+  },
+  {
+    city: "KANO",
+    branches: [
+      {
+        id: "kano-sabon-gari",
+        name: "Sabon Gari Office",
+        address: "23 Bompai Road, Sabon Gari, Kano",
+        city: "KANO",
+        whatsappNumber: "2348090123456",
+        operatingHours: "Mon-Sat: 8AM-5PM",
+        rating: 4.0,
+        reviewCount: 56,
+        latitude: 12.0126,
+        longitude: 8.5322,
+        currencies: [
+          { code: "USD", flag: "🇺🇸", buyRate: 1585, sellRate: 1625, denomination: "$100+" },
+          { code: "USD", flag: "🇺🇸", buyRate: 1555, sellRate: 1625, denomination: "$1" },
+          { code: "USD", flag: "🇺🇸", buyRate: 1565, sellRate: 1625, denomination: "$5,$10,$20" },
+          { code: "EUR", flag: "🇪🇺", buyRate: 1685, sellRate: 1725 },
+          { code: "GBP", flag: "🇬🇧", buyRate: 1955, sellRate: 2005 },
+        ],
+      },
+    ],
+  },
+  {
+    city: "KADUNA",
+    branches: [
+      {
+        id: "kaduna-barnawa",
+        name: "Barnawa Office",
+        address: "56 Ahmadu Bello Way, Barnawa, Kaduna",
+        city: "KADUNA",
+        whatsappNumber: "2348001234567",
+        operatingHours: "Mon-Fri: 8AM-4PM",
+        rating: 4.2,
+        reviewCount: 34,
+        latitude: 10.4789,
+        longitude: 7.4294,
+        currencies: [
+          { code: "USD", flag: "🇺🇸", buyRate: 1582, sellRate: 1622, denomination: "$100+" },
+          { code: "USD", flag: "🇺🇸", buyRate: 1552, sellRate: 1622, denomination: "$1" },
+          { code: "USD", flag: "🇺🇸", buyRate: 1562, sellRate: 1622, denomination: "$5,$10,$20" },
+          { code: "EUR", flag: "🇪🇺", buyRate: 1682, sellRate: 1722 },
+        ],
+      },
+    ],
+  },
+  {
+    city: "BAUCHI",
+    branches: [
+      {
+        id: "bauchi-main",
+        name: "Bauchi Main Office",
+        address: "15 Jos Road, Bauchi Central, Bauchi",
+        city: "BAUCHI",
+        whatsappNumber: "2348012345679",
+        operatingHours: "Mon-Fri: 9AM-4PM",
+        rating: 3.8,
+        reviewCount: 23,
+        latitude: 10.3103,
+        longitude: 9.8439,
+        currencies: [
+          { code: "USD", flag: "🇺🇸", buyRate: 1580, sellRate: 1620, denomination: "$100+" },
+          { code: "USD", flag: "🇺🇸", buyRate: 1550, sellRate: 1620, denomination: "$1" },
+          { code: "USD", flag: "🇺🇸", buyRate: 1560, sellRate: 1620, denomination: "$5,$10,$20" },
+        ],
+      },
+    ],
+  },
+];
+
+export const allCurrencies = ["USD", "EUR", "GBP", "CAD", "AED", "CNY", "CHF", "AUD"];

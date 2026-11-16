@@ -1,0 +1,160 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&family=Playfair+Display:ital,wght@1,700&display=swap');
+@import "tailwindcss";
+@config "../tailwind.config.ts";
+@custom-variant dark (&:where(.dark, .dark *));
+
+/* Aboki Bureau de Change Design System
+   Primary: Red (#E31E24) 
+   Background: Dark Charcoal Gray (#2D2D2D)
+   Cards: White
+   All colors in HSL format
+*/
+
+@layer base {
+  :root {
+    /* Aboki Red - Primary brand color */
+    --primary: 358 79% 51%;
+    --primary-foreground: 0 0% 100%;
+
+    /* Dark charcoal background */
+    --background: 0 0% 18%;
+    --foreground: 0 0% 100%;
+
+    /* White cards */
+    --card: 0 0% 100%;
+    --card-foreground: 0 0% 18%;
+
+    --popover: 0 0% 100%;
+    --popover-foreground: 0 0% 18%;
+
+    /* Secondary - slightly lighter gray */
+    --secondary: 0 0% 25%;
+    --secondary-foreground: 0 0% 100%;
+
+    /* Muted - for subtle elements */
+    --muted: 0 0% 30%;
+    --muted-foreground: 0 0% 70%;
+
+    /* Accent - uses primary red */
+    --accent: 358 79% 51%;
+    --accent-foreground: 0 0% 100%;
+
+    --destructive: 0 84% 60%;
+    --destructive-foreground: 0 0% 100%;
+
+    --border: 0 0% 85%;
+    --input: 0 0% 100%;
+    --input-foreground: 0 0% 18%;
+    --ring: 358 79% 51%;
+
+    --radius: 0.75rem;
+
+    /* Sidebar */
+    --sidebar-background: 0 0% 18%;
+    --sidebar-foreground: 0 0% 100%;
+    --sidebar-primary: 358 79% 51%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 0 0% 25%;
+    --sidebar-accent-foreground: 0 0% 100%;
+    --sidebar-border: 0 0% 30%;
+    --sidebar-ring: 358 79% 51%;
+
+    /* Custom Aboki tokens */
+    --aboki-red: 358 79% 51%;
+    --aboki-dark: 0 0% 18%;
+    --aboki-card: 0 0% 100%;
+    --aboki-badge: 358 79% 51%;
+  }
+
+  .dark {
+    --primary: 358 79% 51%;
+    --primary-foreground: 0 0% 100%;
+    --background: 0 0% 18%;
+    --foreground: 0 0% 100%;
+    --card: 0 0% 100%;
+    --card-foreground: 0 0% 18%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 0 0% 18%;
+    --secondary: 0 0% 25%;
+    --secondary-foreground: 0 0% 100%;
+    --muted: 0 0% 30%;
+    --muted-foreground: 0 0% 70%;
+    --accent: 358 79% 51%;
+    --accent-foreground: 0 0% 100%;
+    --destructive: 0 84% 60%;
+    --destructive-foreground: 0 0% 100%;
+    --border: 0 0% 30%;
+    --input: 0 0% 30%;
+    --ring: 358 79% 51%;
+    --sidebar-background: 0 0% 18%;
+    --sidebar-foreground: 0 0% 100%;
+    --sidebar-primary: 358 79% 51%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 0 0% 25%;
+    --sidebar-accent-foreground: 0 0% 100%;
+    --sidebar-border: 0 0% 30%;
+    --sidebar-ring: 358 79% 51%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply bg-background text-foreground font-sans antialiased;
+    font-family: 'Poppins', sans-serif;
+    font-size: 16px;
+    /* iPhone safe areas */
+    padding-top: env(safe-area-inset-top);
+    padding-bottom: env(safe-area-inset-bottom);
+    padding-left: env(safe-area-inset-left);
+    padding-right: env(safe-area-inset-right);
+  }
+
+  /* Custom scrollbar for mobile feel */
+  ::-webkit-scrollbar {
+    width: 0px;
+    background: transparent;
+  }
+}
+
+@layer utilities {
+  .font-brand {
+    font-family: 'Playfair Display', serif;
+    font-style: italic;
+    font-weight: 700;
+  }
+
+  .safe-top {
+    padding-top: max(env(safe-area-inset-top), 12px);
+  }
+
+  .safe-bottom {
+    padding-bottom: max(env(safe-area-inset-bottom), 20px);
+  }
+
+  /* Touch-friendly tap targets */
+  .touch-target {
+    min-height: 44px;
+    min-width: 44px;
+    flex-shrink: 0;
+  }
+
+  .no-scrollbar::-webkit-scrollbar,
+  .scrollbar-hide::-webkit-scrollbar {
+    display: none;
+  }
+
+  .no-scrollbar,
+  .scrollbar-hide {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+
+  /* Smooth iOS-like transitions */
+  .ios-transition {
+    transition: all 0.3s cubic-bezier(0.25, 0.1, 0.25, 1);
+  }
+}
