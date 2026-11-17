@@ -293,9 +293,9 @@ const TESTIMONIALS = [
   },
 ];
 
-const ABOKI_TRAVELS_WHATSAPP = "2347019263030";
-const ABOKI_TRAVELS_PHONE = "+2347019263030";
-const ABOKI_TRAVELS_EMAIL = "travels@abokibdc.com";
+const ABOKI_TRAVELS_WHATSAPP = "2347064937199";
+const ABOKI_TRAVELS_PHONE = "+2347064937199";
+const ABOKI_TRAVELS_EMAIL = "abokibdcs@gmail.com";
 
 export default function TravelsScreen() {
   const [tripType, setTripType] = useState<"Round Trip" | "One Way">("Round Trip");

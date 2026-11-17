@@ -215,7 +215,7 @@ export default function AbokiWebsite() {
                 name: branch.name,
                 address: branch.address,
                 city: city.name.toUpperCase(),
-                whatsappNumber: branch.whatsapp_number || "+2347019263030",
+                whatsappNumber: branch.whatsapp_number || "+2347064937199",
                 operatingHours: branch.operating_hours,
                 rating: branch.rating,
                 reviewCount: branch.review_count,
@@ -389,7 +389,7 @@ export default function AbokiWebsite() {
     ].filter(Boolean);
 
     window.open(
-      `https://wa.me/2347019263030?text=${encodeURIComponent(lines.join("\n"))}`,
+      `https://wa.me/2347064937199?text=${encodeURIComponent(lines.join("\n"))}`,
       "_blank",
       "noopener,noreferrer"
     );
@@ -406,18 +406,18 @@ export default function AbokiWebsite() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-2.5 flex flex-wrap items-center justify-between gap-3">
           <div className="flex flex-wrap items-center gap-4 sm:gap-6">
             <a
-              href="tel:+2347019263030"
+              href="tel:+2347064937199"
               className="inline-flex items-center gap-1.5 hover:text-white transition-colors font-medium"
             >
               <Phone className="w-3.5 h-3.5 text-red-500" />
-              <span>Service Line: +234 701 926 3030</span>
+              <span>Service Line: +2347064937199</span>
             </a>
             <a
-              href="mailto:support@abokibdc.com"
+              href="mailto:abokibdcs@gmail.com"
               className="inline-flex items-center gap-1.5 hover:text-white transition-colors font-medium"
             >
               <Mail className="w-3.5 h-3.5 text-red-500" />
-              <span>support@abokibdc.com</span>
+              <span>Support Email: abokibdcs@gmail.com</span>
             </a>
           </div>
 
@@ -766,7 +766,7 @@ export default function AbokiWebsite() {
                       <a
                         href={`https://wa.me/${
                           converterBranch?.whatsappNumber.replace(/[^0-9]/g, "") ||
-                          "2347019263030"
+                          "2347064937199"
                         }?text=${encodeURIComponent(
                           `Hello Aboki BDC (${convertedResult.branchName})! I want to exchange ${amount} ${
                             convertedResult.currencyCode
@@ -900,7 +900,7 @@ export default function AbokiWebsite() {
                         <a
                           href={`https://wa.me/${
                             marketBranch?.whatsappNumber.replace(/[^0-9]/g, "") ||
-                            "2347019263030"
+                            "2347064937199"
                           }?text=${encodeURIComponent(
                             `Hello ${marketBranch?.name}! I want to trade ${curr.code} ${
                               curr.denomination ? `(${curr.denomination})` : ""
@@ -1038,7 +1038,7 @@ export default function AbokiWebsite() {
                         <Phone className="w-3.5 h-3.5 text-red-600 shrink-0 mt-0.5" />
                         <span>
                           <strong className="text-slate-800">Phone Number:</strong>{" "}
-                          {branch.whatsappNumber || "+234 701 926 3030"}
+                          {branch.whatsappNumber || "+2347064937199"}
                         </span>
                       </p>
                       <p className="flex items-start gap-2">
@@ -1138,7 +1138,7 @@ export default function AbokiWebsite() {
               </p>
             </div>
             <a
-              href="https://wa.me/2347019263030?text=Hello%20Aboki%20BDC%20Travels!%20I%20would%20like%20to%20inquire%20about%20Umrah%20and%20Flight%20packages."
+              href="https://wa.me/2347064937199?text=Hello%20Aboki%20BDC%20Travels!%20I%20would%20like%20to%20inquire%20about%20Umrah%20and%20Flight%20packages."
               target="_blank"
               rel="noopener noreferrer"
               className="px-5 py-3 rounded-xl bg-amber-500 hover:bg-amber-400 text-slate-950 text-xs font-extrabold uppercase tracking-wider flex items-center gap-2 self-start"
@@ -1193,7 +1193,7 @@ export default function AbokiWebsite() {
                   </span>
                 </div>
                 <a
-                  href="https://wa.me/2347019263030?text=Hello%20Aboki%20BDC%20Travels!%20I%20want%20to%20book%20the%20Executive%20Haramain%20Umrah%20Package."
+                  href="https://wa.me/2347064937199?text=Hello%20Aboki%20BDC%20Travels!%20I%20want%20to%20book%20the%20Executive%20Haramain%20Umrah%20Package."
                   target="_blank"
                   rel="noopener noreferrer"
                   className="px-3.5 py-2 rounded-lg bg-red-600 hover:bg-red-700 text-white text-xs font-bold"
@@ -1246,7 +1246,7 @@ export default function AbokiWebsite() {
                   </span>
                 </div>
                 <a
-                  href="https://wa.me/2347019263030?text=Hello%20Aboki%20BDC%20Travels!%20I%20want%20to%20book%20the%20Economy%20Plus%20Umrah%20Package."
+                  href="https://wa.me/2347064937199?text=Hello%20Aboki%20BDC%20Travels!%20I%20want%20to%20book%20the%20Economy%20Plus%20Umrah%20Package."
                   target="_blank"
                   rel="noopener noreferrer"
                   className="px-3.5 py-2 rounded-lg bg-red-600 hover:bg-red-700 text-white text-xs font-bold"
@@ -1299,7 +1299,7 @@ export default function AbokiWebsite() {
                   </span>
                 </div>
                 <a
-                  href="https://wa.me/2347019263030?text=Hello%20Aboki%20BDC%20Travels!%20I%20want%20to%20book%20a%20flight%20or%20holiday%20package."
+                  href="https://wa.me/2347064937199?text=Hello%20Aboki%20BDC%20Travels!%20I%20want%20to%20book%20a%20flight%20or%20holiday%20package."
                   target="_blank"
                   rel="noopener noreferrer"
                   className="px-3.5 py-2 rounded-lg bg-red-600 hover:bg-red-700 text-white text-xs font-bold"
@@ -1504,7 +1504,7 @@ export default function AbokiWebsite() {
                       Service Line & WhatsApp
                     </p>
                     <p className="text-sm font-bold text-slate-900">
-                      +234 701 926 3030 • +234 803 123 4567
+                      +2347064937199
                     </p>
                   </div>
                 </div>
@@ -1512,10 +1512,10 @@ export default function AbokiWebsite() {
                   <Mail className="w-5 h-5 text-red-600 shrink-0 mt-0.5" />
                   <div>
                     <p className="text-xs font-bold uppercase text-slate-400">
-                      Official Email
+                      Support Email
                     </p>
                     <p className="text-sm font-bold text-slate-900">
-                      support@abokibdc.com • travels@abokibdc.com
+                      abokibdcs@gmail.com
                     </p>
                   </div>
                 </div>
@@ -1666,14 +1666,14 @@ export default function AbokiWebsite() {
                 </li>
                 <li className="flex items-center gap-2">
                   <Phone className="w-4 h-4 text-red-500 shrink-0" />
-                  <a href="tel:+2347019263030" className="hover:text-white">
-                    +234 701 926 3030
+                  <a href="tel:+2347064937199" className="hover:text-white">
+                    +2347064937199
                   </a>
                 </li>
                 <li className="flex items-center gap-2">
                   <Mail className="w-4 h-4 text-red-500 shrink-0" />
-                  <a href="mailto:support@abokibdc.com" className="hover:text-white">
-                    support@abokibdc.com
+                  <a href="mailto:abokibdcs@gmail.com" className="hover:text-white">
+                    abokibdcs@gmail.com
                   </a>
                 </li>
               </ul>

@@ -87,20 +87,29 @@ const AboutScreen = forwardRef<HTMLDivElement, AboutScreenProps>(
         {/* Contact */}
         <h3 className="text-sm font-semibold text-foreground mb-2">Contact Us</h3>
         <div className="bg-card rounded-xl p-3 shadow-lg mb-3">
-          <div className="space-y-2">
+          <div className="space-y-2.5">
             <a
-              href="mailto:info@abokibdc.com"
+              href="mailto:abokibdcs@gmail.com"
               className="flex items-center gap-2 text-card-foreground"
             >
               <Mail className="w-4 h-4 text-primary" />
-              <span className="text-xs">info@abokibdc.com</span>
+              <span className="text-xs">Support Email: abokibdcs@gmail.com</span>
             </a>
             <a
-              href="https://wa.me/2348001234567"
+              href="tel:+2347064937199"
+              className="flex items-center gap-2 text-card-foreground"
+            >
+              <Phone className="w-4 h-4 text-primary" />
+              <span className="text-xs">Phone: +2347064937199</span>
+            </a>
+            <a
+              href="https://wa.me/2347064937199"
+              target="_blank"
+              rel="noopener noreferrer"
               className="flex items-center gap-2 text-card-foreground"
             >
               <MessageCircle className="w-4 h-4 text-green-500" />
-              <span className="text-xs">WhatsApp: +234 800 123 4567</span>
+              <span className="text-xs">WhatsApp: +2347064937199</span>
             </a>
           </div>
         </div>

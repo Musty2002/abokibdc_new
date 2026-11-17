@@ -42,13 +42,13 @@ export function SidebarDrawer({ open, onOpenChange }: SidebarDrawerProps) {
     switch (action) {
       case "contact":
         if (isNative) {
-          await Browser.open({ url: "tel:+2347019263030" });
+          await Browser.open({ url: "tel:+2347064937199" });
         } else {
-          window.open("tel:+2347019263030", "_self");
+          window.open("tel:+2347064937199", "_self");
         }
         break;
       case "whatsapp":
-        const whatsappUrl = "https://wa.me/2347019263030?text=Hello, I need help with Aboki Bureau De Change";
+        const whatsappUrl = "https://wa.me/2347064937199?text=Hello, I need help with Aboki Bureau De Change";
         if (isNative) {
           await Browser.open({ url: whatsappUrl });
         } else {
@@ -57,9 +57,9 @@ export function SidebarDrawer({ open, onOpenChange }: SidebarDrawerProps) {
         break;
       case "email":
         if (isNative) {
-          await Browser.open({ url: "mailto:support@abokibdc.com?subject=Support Request" });
+          await Browser.open({ url: "mailto:abokibdcs@gmail.com?subject=Support Request" });
         } else {
-          window.open("mailto:support@abokibdc.com?subject=Support Request", "_self");
+          window.open("mailto:abokibdcs@gmail.com?subject=Support Request", "_self");
         }
         break;
       case "notifications":
