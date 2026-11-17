@@ -1,4 +1,4 @@
-import { useState, useCallback, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -7,7 +7,6 @@ import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import Index from "./pages/Index";
 import AbokiWebsite from "./pages/website/AbokiWebsite";
 import NotFound from "./pages/NotFound";
-import SplashScreen from "./components/SplashScreen";
 
 // Admin pages
 import AdminLogin from "./pages/admin/AdminLogin";
@@ -29,25 +28,11 @@ const queryClient = new QueryClient();
 
 const App = () => {
   const [gmpQuotaExceeded, setGmpQuotaExceeded] = useState(false);
-  const [showSplash, setShowSplash] = useState(() => {
-    const host = window.location.host.toLowerCase();
-    const isAdminSubdomain =
-      host === "setup.abokibdc.com.ng" || host === "admin.abokibdc.com.ng";
-
-    return (
-      !isAdminSubdomain &&
-      window.location.pathname === "/app"
-    );
-  });
 
   useEffect(() => {
     const handleQuotaExceeded = () => setGmpQuotaExceeded(true);
     window.addEventListener("gmp-quota-exceeded", handleQuotaExceeded);
     return () => window.removeEventListener("gmp-quota-exceeded", handleQuotaExceeded);
-  }, []);
-
-  const handleSplashComplete = useCallback(() => {
-    setShowSplash(false);
   }, []);
 
   return (
@@ -71,7 +56,6 @@ const App = () => {
             </span>
           </div>
         )}
-        {showSplash && <SplashScreen onComplete={handleSplashComplete} duration={1200} />}
         <BrowserRouter>
           <Routes>
             {(() => {
