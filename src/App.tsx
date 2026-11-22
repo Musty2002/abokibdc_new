@@ -21,6 +21,7 @@ import AdminBranchAdmins from "./pages/admin/AdminBranchAdmins";
 import AdminSettings from "./pages/admin/AdminSettings";
 import AdminSetup from "./pages/admin/AdminSetup";
 import AdminMyBranch from "./pages/admin/AdminMyBranch";
+import AdminTravelInquiries from "./pages/admin/AdminTravelInquiries";
 import { AdminLayout } from "./components/admin/AdminLayout";
 import { AdminProtectedRoute } from "./components/admin/AdminProtectedRoute";
 
@@ -183,6 +184,7 @@ const App = () => {
                     <Route path="notifications" element={<AdminNotifications />} />
                     <Route path="branch-admins" element={<AdminBranchAdmins />} />
                     <Route path="my-branch" element={<AdminMyBranch />} />
+                    <Route path="travel-inquiries" element={<AdminTravelInquiries />} />
                     <Route path="settings" element={<AdminSettings />} />
                   </Route>
 

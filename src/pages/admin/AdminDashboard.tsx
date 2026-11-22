@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { Building2, MapPin, Coins, Users, Bell, Plus, ArrowRight } from 'lucide-react';
+import { Building2, MapPin, Coins, Users, Bell, Plus, ArrowRight, Plane } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { StatsCard } from '@/components/admin/StatsCard';
 import { supabase } from '@/integrations/supabase/client';
@@ -13,6 +13,7 @@ interface DashboardStats {
   totalCurrencies: number;
   totalSubscribers: number;
   recentNotifications: number;
+  newTravelInquiries: number;
 }
 
 export default function AdminDashboard() {
@@ -29,12 +30,14 @@ export default function AdminDashboard() {
           { count: currencyCount },
           { count: subscriberCount },
           { count: notificationCount },
+          { count: travelInquiryCount },
         ] = await Promise.all([
           supabase.from('branches').select('*', { count: 'exact', head: true }),
           supabase.from('cities').select('*', { count: 'exact', head: true }),
           supabase.from('currencies').select('*', { count: 'exact', head: true }),
           supabase.from('push_subscriptions').select('*', { count: 'exact', head: true }),
           supabase.from('notification_logs').select('*', { count: 'exact', head: true }),
+          supabase.from('travel_inquiries').select('*', { count: 'exact', head: true }).eq('status', 'new'),
         ]);
 
         setStats({
@@ -43,6 +46,7 @@ export default function AdminDashboard() {
           totalCurrencies: currencyCount || 0,
           totalSubscribers: subscriberCount || 0,
           recentNotifications: notificationCount || 0,
+          newTravelInquiries: travelInquiryCount || 0,
         });
       } catch (error) {
         console.error('Error fetching stats:', error);
@@ -116,6 +120,12 @@ export default function AdminDashboard() {
             icon={Users}
             description="Push notification subscribers"
           />
+          <StatsCard
+            title="New Travel Requests"
+            value={stats.newTravelInquiries}
+            icon={Plane}
+            description="Unreviewed travel inquiries"
+          />
         </div>
       )}
 
@@ -164,6 +174,21 @@ export default function AdminDashboard() {
                 </p>
               </div>
               <Users className="h-5 w-5 text-slate-400 group-hover:text-red-600 transition-colors" />
+            </div>
+          </Link>
+
+          <Link 
+            to="/admin/travel-inquiries"
+            className="bg-white rounded-xl p-6 border border-slate-200 hover:border-red-300 transition-colors group"
+          >
+            <div className="flex items-center justify-between">
+              <div>
+                <h3 className="font-semibold text-slate-900">Travel Inquiries</h3>
+                <p className="text-sm text-slate-500 mt-1">
+                  Review booking requests from users
+                </p>
+              </div>
+              <Plane className="h-5 w-5 text-slate-400 group-hover:text-red-600 transition-colors" />
             </div>
           </Link>
         </div>

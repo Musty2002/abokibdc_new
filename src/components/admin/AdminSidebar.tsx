@@ -8,7 +8,8 @@ import {
   Bell, 
   Users, 
   Settings,
-  X
+  X,
+  Plane,
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { AdminRole } from '@/hooks/useAdminAuth';
@@ -29,6 +30,7 @@ const superAdminNavItems = [
   { path: '/admin/rates', label: 'Quick Rates', icon: DollarSign },
   { path: '/admin/notifications', label: 'Notifications', icon: Bell },
   { path: '/admin/branch-admins', label: 'Branch Admins', icon: Users },
+  { path: '/admin/travel-inquiries', label: 'Travel Inquiries', icon: Plane },
   { path: '/admin/settings', label: 'Settings', icon: Settings },
 ];
 

@@ -385,6 +385,48 @@ export type Database = {
           },
         ]
       }
+      travel_inquiries: {
+        Row: {
+          id: string
+          created_at: string
+          inquiry_type: string
+          subject: string
+          details: string | null
+          full_name: string
+          phone: string
+          email: string | null
+          notes: string | null
+          status: 'new' | 'in_progress' | 'completed' | 'cancelled'
+          admin_notes: string | null
+        }
+        Insert: {
+          id?: string
+          created_at?: string
+          inquiry_type: string
+          subject: string
+          details?: string | null
+          full_name: string
+          phone: string
+          email?: string | null
+          notes?: string | null
+          status?: 'new' | 'in_progress' | 'completed' | 'cancelled'
+          admin_notes?: string | null
+        }
+        Update: {
+          id?: string
+          created_at?: string
+          inquiry_type?: string
+          subject?: string
+          details?: string | null
+          full_name?: string
+          phone?: string
+          email?: string | null
+          notes?: string | null
+          status?: 'new' | 'in_progress' | 'completed' | 'cancelled'
+          admin_notes?: string | null
+        }
+        Relationships: []
+      }
       user_roles: {
         Row: {
           created_at: string

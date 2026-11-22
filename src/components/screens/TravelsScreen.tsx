@@ -21,12 +21,16 @@ import {
   ShieldCheck,
   Clock,
   Moon,
+  Send,
+  Loader2,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
 import { Drawer, DrawerContent } from "@/components/ui/drawer";
 import { toast } from "@/hooks/use-toast";
+import { supabase } from "@/integrations/supabase/client";
 
 interface UmrahPackage {
   id: string;
@@ -310,13 +314,23 @@ export default function TravelsScreen() {
   const [bookingOpen, setBookingOpen] = useState(false);
   const [bookingSubject, setBookingSubject] = useState("");
   const [bookingSubtitle, setBookingSubtitle] = useState("");
+  const [bookingType, setBookingType] = useState("");
   const [customerName, setCustomerName] = useState("");
   const [customerPhone, setCustomerPhone] = useState("");
+  const [customerEmail, setCustomerEmail] = useState("");
   const [customerNotes, setCustomerNotes] = useState("");
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [submitted, setSubmitted] = useState(false);
 
-  const openQuickBooking = (subject: string, subtitle: string) => {
+  const openQuickBooking = (subject: string, subtitle: string, type = "General Inquiry") => {
     setBookingSubject(subject);
     setBookingSubtitle(subtitle);
+    setBookingType(type);
+    setSubmitted(false);
+    setCustomerName("");
+    setCustomerPhone("");
+    setCustomerEmail("");
+    setCustomerNotes("");
     setBookingOpen(true);
   };
 
@@ -327,7 +341,34 @@ export default function TravelsScreen() {
       tripType === "Round Trip"
         ? `Depart: ${departDate} • Return: ${returnDate} • ${passengers}`
         : `Depart: ${departDate} • ${passengers}`;
-    openQuickBooking(`Flight Booking: ${summary}`, datesInfo);
+    openQuickBooking(`Flight Booking: ${summary}`, datesInfo, "Flight Booking");
+  };
+
+  const handleSubmitToAdmin = async () => {
+    if (!customerName.trim() || !customerPhone.trim()) {
+      toast({ title: "Required fields missing", description: "Please enter your name and phone number.", variant: "destructive" });
+      return;
+    }
+    setIsSubmitting(true);
+    try {
+      const { error } = await supabase.from("travel_inquiries").insert({
+        inquiry_type: bookingType,
+        subject: bookingSubject,
+        details: bookingSubtitle || null,
+        full_name: customerName.trim(),
+        phone: customerPhone.trim(),
+        email: customerEmail.trim() || null,
+        notes: customerNotes.trim() || null,
+      });
+      if (error) throw error;
+      setSubmitted(true);
+      toast({ title: "✅ Inquiry Submitted!", description: "Our travel team will reach out to you shortly." });
+    } catch (err) {
+      console.error(err);
+      toast({ title: "Submission failed", description: "Please try again or contact us on WhatsApp.", variant: "destructive" });
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   const handleConfirmWhatsAppBooking = () => {
@@ -338,6 +379,7 @@ export default function TravelsScreen() {
       bookingSubtitle ? `Details: ${bookingSubtitle}` : "",
       customerName ? `Name: ${customerName}` : "",
       customerPhone ? `Phone: ${customerPhone}` : "",
+      customerEmail ? `Email: ${customerEmail}` : "",
       customerNotes ? `Notes: ${customerNotes}` : "",
     ].filter(Boolean);
 
@@ -595,7 +637,8 @@ export default function TravelsScreen() {
                     onClick={() =>
                       openQuickBooking(
                         `Umrah Package: ${pkg.title}`,
-                        `${pkg.tier} • ${pkg.duration} • Starting from ₦${pkg.price.toLocaleString()}`
+                        `${pkg.tier} • ${pkg.duration} • Starting from ₦${pkg.price.toLocaleString()}`,
+                        "Umrah Package"
                       )
                     }
                     className="h-8 px-3.5 text-xs font-bold bg-primary hover:bg-primary/90 text-white rounded-lg shadow-xs"
@@ -687,7 +730,8 @@ export default function TravelsScreen() {
                       onClick={() =>
                         openQuickBooking(
                           `Flight Deal: ${deal.origin} ⇄ ${deal.destination}`,
-                          `${deal.tripType} (${deal.cabin}) • ${deal.dates} • ₦${deal.price.toLocaleString()}`
+                          `${deal.tripType} (${deal.cabin}) • ${deal.dates} • ₦${deal.price.toLocaleString()}`,
+                          "Flight Deal"
                         )
                       }
                       className="h-7 px-3 text-[11px] font-semibold bg-primary hover:bg-primary/90 text-white rounded-lg"
@@ -766,7 +810,8 @@ export default function TravelsScreen() {
                     onClick={() =>
                       openQuickBooking(
                         `Tour Package: ${tour.title} (${tour.subtitle})`,
-                        `${tour.duration} • Includes: ${tour.highlights.join(", ")}`
+                        `${tour.duration} • Includes: ${tour.highlights.join(", ")}`,
+                        "Tour Package"
                       )
                     }
                     className="h-7 px-3 text-[11px] font-semibold bg-slate-900 hover:bg-slate-800 text-white rounded-lg"
@@ -800,7 +845,8 @@ export default function TravelsScreen() {
               onClick={() =>
                 openQuickBooking(
                   `Service Inquiry: ${service.title}`,
-                  service.desc
+                  service.desc,
+                  "Service Inquiry"
                 )
               }
               className="text-left bg-card p-3 rounded-xl border border-border hover:border-primary/40 transition-all space-y-1.5 group"
@@ -934,11 +980,12 @@ export default function TravelsScreen() {
 
       {/* Interactive Booking / Inquiry Drawer */}
       <Drawer open={bookingOpen} onOpenChange={setBookingOpen}>
-        <DrawerContent className="bg-white rounded-t-2xl max-h-[85vh]">
+        <DrawerContent className="bg-white rounded-t-2xl max-h-[90vh]">
           <div className="p-4 space-y-4 overflow-y-auto">
+            {/* Header */}
             <div>
               <span className="text-[10px] font-bold uppercase tracking-wider text-primary">
-                Aboki BDC Travels Instant Reservation
+                Aboki BDC Travels — Booking Request
               </span>
               <h3 className="text-base font-bold text-slate-900 mt-0.5">
                 {bookingSubject}
@@ -948,58 +995,121 @@ export default function TravelsScreen() {
               )}
             </div>
 
-            <div className="space-y-3">
-              <div>
-                <Label className="text-xs text-slate-700">Your Full Name</Label>
-                <Input
-                  value={customerName}
-                  onChange={(e) => setCustomerName(e.target.value)}
-                  placeholder="Enter your full name as on passport"
-                  className="mt-1 h-9 text-xs"
-                />
+            {submitted ? (
+              /* Success state */
+              <div className="flex flex-col items-center gap-3 py-6 text-center">
+                <CheckCircle2 className="w-12 h-12 text-emerald-500" />
+                <h4 className="text-base font-bold text-slate-900">Inquiry Submitted!</h4>
+                <p className="text-xs text-slate-500 leading-relaxed max-w-xs">
+                  Your travel request has been sent to our admin team. We'll reach out to you shortly on WhatsApp or phone.
+                </p>
+                <Button
+                  type="button"
+                  onClick={() => setBookingOpen(false)}
+                  className="mt-2 h-9 px-6 text-xs font-semibold"
+                >
+                  Close
+                </Button>
               </div>
+            ) : (
+              <>
+                {/* Form Fields */}
+                <div className="space-y-3">
+                  <div>
+                    <Label className="text-xs font-semibold text-slate-700">
+                      Full Name <span className="text-red-500">*</span>
+                    </Label>
+                    <Input
+                      value={customerName}
+                      onChange={(e) => setCustomerName(e.target.value)}
+                      placeholder="Enter your full name as on passport"
+                      className="mt-1 h-9 text-xs"
+                    />
+                  </div>
 
-              <div>
-                <Label className="text-xs text-slate-700">Phone / WhatsApp Number</Label>
-                <Input
-                  value={customerPhone}
-                  onChange={(e) => setCustomerPhone(e.target.value)}
-                  placeholder="+234 800 000 0000"
-                  className="mt-1 h-9 text-xs"
-                />
-              </div>
+                  <div>
+                    <Label className="text-xs font-semibold text-slate-700">
+                      Phone / WhatsApp Number <span className="text-red-500">*</span>
+                    </Label>
+                    <Input
+                      value={customerPhone}
+                      onChange={(e) => setCustomerPhone(e.target.value)}
+                      placeholder="+234 800 000 0000"
+                      type="tel"
+                      className="mt-1 h-9 text-xs"
+                    />
+                  </div>
 
-              <div>
-                <Label className="text-xs text-slate-700">
-                  Additional Preferences (Optional)
-                </Label>
-                <Input
-                  value={customerNotes}
-                  onChange={(e) => setCustomerNotes(e.target.value)}
-                  placeholder="Preferred departure date, Makkah hotel, airline..."
-                  className="mt-1 h-9 text-xs"
-                />
-              </div>
-            </div>
+                  <div>
+                    <Label className="text-xs font-semibold text-slate-700">
+                      Email Address <span className="text-slate-400 font-normal">(optional)</span>
+                    </Label>
+                    <Input
+                      value={customerEmail}
+                      onChange={(e) => setCustomerEmail(e.target.value)}
+                      placeholder="yourname@email.com"
+                      type="email"
+                      className="mt-1 h-9 text-xs"
+                    />
+                  </div>
 
-            <div className="flex flex-col gap-2 pt-2">
-              <Button
-                type="button"
-                onClick={handleConfirmWhatsAppBooking}
-                className="w-full h-10 bg-green-600 hover:bg-green-700 text-white text-xs font-bold rounded-lg"
-              >
-                <MessageCircle className="w-4 h-4 mr-1.5" />
-                Send Booking Request via WhatsApp
-              </Button>
-              <Button
-                type="button"
-                variant="outline"
-                onClick={() => setBookingOpen(false)}
-                className="w-full h-9 text-xs"
-              >
-                Cancel
-              </Button>
-            </div>
+                  <div>
+                    <Label className="text-xs font-semibold text-slate-700">
+                      Additional Preferences <span className="text-slate-400 font-normal">(optional)</span>
+                    </Label>
+                    <Textarea
+                      value={customerNotes}
+                      onChange={(e) => setCustomerNotes(e.target.value)}
+                      placeholder="Preferred dates, hotel tier, special requirements..."
+                      className="mt-1 text-xs min-h-[72px] resize-none"
+                    />
+                  </div>
+                </div>
+
+                {/* Action Buttons */}
+                <div className="flex flex-col gap-2 pt-1">
+                  {/* Primary: Submit to Admin (saves to DB) */}
+                  <Button
+                    type="button"
+                    onClick={handleSubmitToAdmin}
+                    disabled={isSubmitting}
+                    className="w-full h-10 bg-primary hover:bg-primary/90 text-white text-xs font-bold rounded-lg"
+                  >
+                    {isSubmitting ? (
+                      <>
+                        <Loader2 className="w-4 h-4 mr-1.5 animate-spin" />
+                        Submitting…
+                      </>
+                    ) : (
+                      <>
+                        <Send className="w-4 h-4 mr-1.5" />
+                        Submit Booking Request
+                      </>
+                    )}
+                  </Button>
+
+                  {/* Secondary: also open WhatsApp */}
+                  <Button
+                    type="button"
+                    onClick={handleConfirmWhatsAppBooking}
+                    variant="outline"
+                    className="w-full h-9 text-xs font-semibold text-green-700 border-green-300 hover:bg-green-50"
+                  >
+                    <MessageCircle className="w-3.5 h-3.5 mr-1.5 text-green-600" />
+                    Continue on WhatsApp Instead
+                  </Button>
+
+                  <Button
+                    type="button"
+                    variant="ghost"
+                    onClick={() => setBookingOpen(false)}
+                    className="w-full h-8 text-xs text-slate-500"
+                  >
+                    Cancel
+                  </Button>
+                </div>
+              </>
+            )}
           </div>
         </DrawerContent>
       </Drawer>
