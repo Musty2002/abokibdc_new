@@ -30,6 +30,9 @@ import { Branch, CityData, branchesData, getBranchCoordinates } from "@/data/bra
 import { supabase } from "@/integrations/supabase/client";
 import BranchDetailSheet from "@/components/rates/BranchDetailSheet";
 import { toast } from "@/hooks/use-toast";
+import { usePushNotifications } from "@/hooks/usePushNotifications";
+import { useNotifications } from "@/hooks/useNotifications";
+import TravelBookingForm from "@/components/travels/TravelBookingForm";
 
 const getFlagCode = (currencyCode: string): string => {
   const flagMap: Record<string, string> = {
@@ -114,6 +117,8 @@ const NEWS_ITEMS = [
 
 export default function AbokiWebsite() {
   const location = useLocation();
+  usePushNotifications();
+  useNotifications();
 
   const [cityGroups, setCityGroups] = useState<CityData[]>(branchesData);
   const [isLoading, setIsLoading] = useState(true);
@@ -1308,6 +1313,11 @@ export default function AbokiWebsite() {
                 </a>
               </div>
             </div>
+          </div>
+
+          {/* Dedicated Travel & Umrah Booking Form */}
+          <div id="travel-booking-form" className="pt-2">
+            <TravelBookingForm source="website" variant="website" />
           </div>
         </div>
       </section>

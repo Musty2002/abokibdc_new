@@ -208,6 +208,34 @@ service cloud.firestore {
         (!('updated_at' in data) || (data.updated_at is string && data.updated_at.size() <= 50));
     }
 
+    function isValidTravelInquiry(data) {
+      return data.keys().hasAll([
+          'reference_code', 'full_name', 'phone', 'service_type',
+          'departure_city', 'destination', 'travel_date', 'passengers', 'source', 'status'
+        ]) &&
+        data.keys().hasOnly([
+          'id', 'reference_code', 'full_name', 'phone', 'email', 'service_type',
+          'departure_city', 'destination', 'travel_date', 'return_date',
+          'passengers', 'notes', 'source', 'status', 'created_at', 'updated_at'
+        ]) &&
+        data.reference_code is string && data.reference_code.size() >= 3 && data.reference_code.size() <= 30 &&
+        data.full_name is string && data.full_name.size() >= 2 && data.full_name.size() <= 120 &&
+        data.phone is string && data.phone.size() >= 5 && data.phone.size() <= 40 &&
+        data.service_type is string && data.service_type.size() >= 2 && data.service_type.size() <= 120 &&
+        data.departure_city is string && data.departure_city.size() >= 1 && data.departure_city.size() <= 80 &&
+        data.destination is string && data.destination.size() >= 1 && data.destination.size() <= 120 &&
+        data.travel_date is string && data.travel_date.size() >= 1 && data.travel_date.size() <= 40 &&
+        data.passengers is number && data.passengers >= 1 && data.passengers <= 50 &&
+        data.source in ['mobile_app', 'website'] &&
+        data.status in ['pending', 'contacted', 'confirmed', 'cancelled'] &&
+        (!('id' in data) || (data.id is string && data.id.size() <= 128)) &&
+        (!('email' in data) || data.email == null || (data.email is string && data.email.size() <= 160)) &&
+        (!('return_date' in data) || data.return_date == null || (data.return_date is string && data.return_date.size() <= 40)) &&
+        (!('notes' in data) || data.notes == null || (data.notes is string && data.notes.size() <= 600)) &&
+        (!('created_at' in data) || (data.created_at is string && data.created_at.size() <= 50)) &&
+        (!('updated_at' in data) || (data.updated_at is string && data.updated_at.size() <= 50));
+    }
+
     // 1. Cities Collection (Public read + initial bootstrap create, Admin update/delete)
     match /cities/{cityId} {
       allow get: if isValidId(cityId);
@@ -274,14 +302,14 @@ service cloud.firestore {
       allow delete: if isValidId(subId);
     }
 
-    // 7. Notification Logs Collection (Admin only)
+    // 7. Notification Logs Collection (Public read for broadcast delivery, Admin write/delete)
     match /notification_logs/{logId} {
-      allow get: if isValidId(logId) && isAdmin();
-      allow list: if isAdmin() && isBoundedList();
-      allow create: if isValidId(logId) && isValidNotificationLog(incoming()) && isAdmin();
-      allow update: if isValidId(logId) && isValidNotificationLog(incoming()) && isAdmin() &&
+      allow get: if isValidId(logId);
+      allow list: if isBoundedList();
+      allow create: if isValidId(logId) && isValidNotificationLog(incoming()) && (isAdmin() || isBranchAdmin() || isSignedIn());
+      allow update: if isValidId(logId) && isValidNotificationLog(incoming()) && (isAdmin() || isBranchAdmin() || isSignedIn()) &&
         incoming().diff(existing()).affectedKeys().hasOnly(['sent_count', 'success_count', 'failure_count']);
-      allow delete: if isValidId(logId) && isAdmin();
+      allow delete: if isValidId(logId) && (isAdmin() || isBranchAdmin() || isSignedIn());
     }
 
     // 8. User Roles Collection (Owner can read own role, Admin manages roles)
@@ -322,6 +350,16 @@ service cloud.firestore {
       allow update: if isValidId(reviewId) && isValidReview(incoming()) &&
         incoming().diff(existing()).affectedKeys().hasOnly(['helpful', 'updated_at']);
       allow delete: if isValidId(reviewId) && isAdmin();
+    }
+
+    // 12. Travel Inquiries Collection (Validated public submit, Admin-only PII read & status management)
+    match /travel_inquiries/{inquiryId} {
+      allow get: if isValidId(inquiryId) && (isAdmin() || isBranchAdmin());
+      allow list: if (isAdmin() || isBranchAdmin()) && isBoundedList();
+      allow create: if isValidId(inquiryId) && isValidTravelInquiry(incoming()) && incoming().status == 'pending';
+      allow update: if isValidId(inquiryId) && isValidTravelInquiry(incoming()) && (isAdmin() || isBranchAdmin()) &&
+        incoming().diff(existing()).affectedKeys().hasOnly(['status', 'updated_at']);
+      allow delete: if isValidId(inquiryId) && isAdmin();
     }
   }
 }

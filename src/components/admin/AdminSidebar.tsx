@@ -8,8 +8,8 @@ import {
   Bell, 
   Users, 
   Settings,
-  X,
   Plane,
+  X
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { AdminRole } from '@/hooks/useAdminAuth';
@@ -28,15 +28,16 @@ const superAdminNavItems = [
   { path: '/admin/cities', label: 'Cities', icon: MapPin },
   { path: '/admin/currencies', label: 'Currencies', icon: Coins },
   { path: '/admin/rates', label: 'Quick Rates', icon: DollarSign },
+  { path: '/admin/travel-inquiries', label: 'Travel Requests', icon: Plane },
   { path: '/admin/notifications', label: 'Notifications', icon: Bell },
   { path: '/admin/branch-admins', label: 'Branch Admins', icon: Users },
-  { path: '/admin/travel-inquiries', label: 'Travel Inquiries', icon: Plane },
   { path: '/admin/settings', label: 'Settings', icon: Settings },
 ];
 
 const branchAdminNavItems = [
   { path: '/admin', label: 'Dashboard', icon: LayoutDashboard },
   { path: '/admin/my-branch', label: 'My Branch', icon: Building2 },
+  { path: '/admin/travel-inquiries', label: 'Travel Requests', icon: Plane },
   { path: '/admin/settings', label: 'Settings', icon: Settings },
 ];
 
@@ -65,9 +66,9 @@ export function AdminSidebar({ isOpen, onClose, role, currentPath }: AdminSideba
           <div className="h-16 flex items-center justify-between px-4 border-b border-slate-200">
             <Link to="/admin" className="flex items-center gap-2">
               <img 
-                src="/favicon.jpg"
+                src="/favicon.png"
                 alt="Aboki"
-                className="h-8 w-auto"
+                className="h-8 w-8 rounded-full object-cover"
               />
               <span className="font-semibold text-slate-900">Admin</span>
             </Link>

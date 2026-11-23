@@ -79,10 +79,38 @@ export function SidebarDrawer({ open, onOpenChange }: SidebarDrawerProps) {
               variant: "destructive",
             });
           }
+        } else if (typeof window !== "undefined" && "Notification" in window) {
+          try {
+            const permission = await Notification.requestPermission();
+            if (permission === "granted") {
+              toast({
+                title: "🔔 Notifications Enabled",
+                description: "You will now receive live rate alerts and Aboki BDC updates!",
+              });
+              try {
+                new Notification("Aboki Bureau De Change", {
+                  body: "Push notifications are now active on your device!",
+                  icon: "/favicon.png",
+                });
+              } catch {
+                // Ignore if restricted
+              }
+            } else {
+              toast({
+                title: "In-App Alerts Active",
+                description: "You can view all live alerts anytime using the Bell icon in the header.",
+              });
+            }
+          } catch {
+            toast({
+              title: "In-App Alerts Active",
+              description: "Live rate alerts and broadcasts appear in the Bell icon at the top right.",
+            });
+          }
         } else {
           toast({
-            title: "Native App Required",
-            description: "Push notifications are available in the mobile app",
+            title: "In-App Alerts Active",
+            description: "Live rate alerts and broadcasts appear in the Bell icon at the top right.",
           });
         }
         break;

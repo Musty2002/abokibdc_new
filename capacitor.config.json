@@ -1,0 +1,20 @@
+{
+  "appId": "com.abokibdc.app",
+  "appName": "Aboki Bureau De Change",
+  "webDir": "dist",
+  "server": {
+    "url": "https://app.abokibdc.com.ng",
+    "cleartext": false,
+    "androidScheme": "https",
+    "allowNavigation": [
+      "app.abokibdc.com.ng",
+      "abokibdc.com.ng",
+      "*.abokibdc.com.ng"
+    ]
+  },
+  "plugins": {
+    "PushNotifications": {
+      "presentationOptions": ["badge", "sound", "alert"]
+    }
+  }
+}

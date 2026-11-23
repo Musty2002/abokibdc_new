@@ -151,6 +151,29 @@
         "helpful": { "type": "number" }
       },
       "required": ["branch_id", "userId", "userName", "rating", "comment", "date", "helpful"]
+    },
+    "TravelInquiry": {
+      "title": "TravelInquiry",
+      "description": "Customer travel, Umrah, flight, or visa booking inquiry submitted from the app or website",
+      "type": "object",
+      "properties": {
+        "reference_code": { "type": "string", "minLength": 3, "maxLength": 30 },
+        "full_name": { "type": "string", "minLength": 2, "maxLength": 120 },
+        "phone": { "type": "string", "minLength": 5, "maxLength": 40 },
+        "email": { "type": "string", "minLength": 0, "maxLength": 160 },
+        "service_type": { "type": "string", "minLength": 2, "maxLength": 120 },
+        "departure_city": { "type": "string", "minLength": 1, "maxLength": 80 },
+        "destination": { "type": "string", "minLength": 1, "maxLength": 120 },
+        "travel_date": { "type": "string", "minLength": 1, "maxLength": 40 },
+        "return_date": { "type": "string", "minLength": 0, "maxLength": 40 },
+        "passengers": { "type": "number" },
+        "notes": { "type": "string", "minLength": 0, "maxLength": 600 },
+        "source": { "type": "string", "enum": ["mobile_app", "website"] },
+        "status": { "type": "string", "enum": ["pending", "contacted", "confirmed", "cancelled"] },
+        "created_at": { "type": "string", "maxLength": 50 },
+        "updated_at": { "type": "string", "maxLength": 50 }
+      },
+      "required": ["reference_code", "full_name", "phone", "service_type", "departure_city", "destination", "travel_date", "passengers", "source", "status"]
     }
   },
   "firestore": {
@@ -197,6 +220,10 @@
     "/reviews/{reviewId}": {
       "schema": { "$ref": "#/entities/Review" },
       "description": "Public customer reviews for BDC branches"
+    },
+    "/travel_inquiries/{inquiryId}": {
+      "schema": { "$ref": "#/entities/TravelInquiry" },
+      "description": "Customer travel and Umrah booking requests (public create, admin-only read/manage)"
     }
   }
 }

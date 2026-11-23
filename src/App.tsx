@@ -4,6 +4,7 @@ import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
+import { Capacitor } from "@capacitor/core";
 import Index from "./pages/Index";
 import AbokiWebsite from "./pages/website/AbokiWebsite";
 import NotFound from "./pages/NotFound";
@@ -63,7 +64,8 @@ const App = () => {
               const host = window.location.host.toLowerCase();
               const isSetup = host === "setup.abokibdc.com.ng";
               const isAdmin = host === "admin.abokibdc.com.ng";
-              const isMobileAppSubdomain = host === "app.abokibdc.com.ng";
+              const isMobileAppSubdomain =
+                host === "app.abokibdc.com.ng" || Capacitor.isNativePlatform();
 
               const redirectForSubdomain = () => {
                 const path = window.location.pathname;
@@ -181,6 +183,7 @@ const App = () => {
                     <Route path="cities" element={<AdminCities />} />
                     <Route path="currencies" element={<AdminCurrencies />} />
                     <Route path="rates" element={<AdminRates />} />
+                    <Route path="travel-inquiries" element={<AdminTravelInquiries />} />
                     <Route path="notifications" element={<AdminNotifications />} />
                     <Route path="branch-admins" element={<AdminBranchAdmins />} />
                     <Route path="my-branch" element={<AdminMyBranch />} />

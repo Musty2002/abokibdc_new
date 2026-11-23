@@ -160,6 +160,27 @@ function applyCollectionDefaults(table: string, id: string, item: Record<string,
         created_at: base.created_at || now,
         updated_at: now,
       };
+    case 'travel_inquiries':
+      return {
+        id,
+        reference_code: String(base.reference_code || `ABK-${Date.now().toString().slice(-4)}`),
+        full_name: String(base.full_name || '').slice(0, 120),
+        phone: String(base.phone || '').slice(0, 40),
+        email: base.email ? String(base.email).slice(0, 160) : null,
+        service_type: String(base.service_type || 'Umrah Package').slice(0, 120),
+        departure_city: String(base.departure_city || 'Abuja').slice(0, 80),
+        destination: String(base.destination || 'Makkah & Madinah').slice(0, 120),
+        travel_date: String(base.travel_date || '').slice(0, 40),
+        return_date: base.return_date ? String(base.return_date).slice(0, 40) : null,
+        passengers: Math.max(1, Math.min(50, Number(base.passengers || 1))),
+        notes: base.notes ? String(base.notes).slice(0, 600) : null,
+        source: base.source === 'website' ? 'website' : 'mobile_app',
+        status: ['pending', 'contacted', 'confirmed', 'cancelled'].includes(base.status)
+          ? base.status
+          : 'pending',
+        created_at: base.created_at || now,
+        updated_at: now,
+      };
     default:
       return {
         id,
@@ -502,6 +523,26 @@ class FirestoreRealtimeChannel {
       );
       this.unsubscribes.push(unsub);
     }
+
+    if (config.table === 'notification_logs') {
+      let initialized = false;
+      const unsub = onSnapshot(
+        collection(db, 'notification_logs'),
+        (snapshot) => {
+          snapshot.docChanges().forEach((change) => {
+            const newDoc = { id: change.doc.id, ...change.doc.data() };
+            if (initialized && change.type === 'added') {
+              callback({ new: newDoc, old: {} });
+            }
+          });
+          initialized = true;
+        },
+        (error) => {
+          console.warn(`Realtime notification listener warning on ${this.name}:`, error);
+        }
+      );
+      this.unsubscribes.push(unsub);
+    }
     return this;
   }
 
@@ -819,6 +860,34 @@ export const supabase = {
           },
           error: null,
         };
+      }
+
+      if (name === 'send-push-notification') {
+        try {
+          const idToken = auth.currentUser ? await auth.currentUser.getIdToken() : '';
+          const res = await fetch('/api/send-push', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              ...(idToken ? { Authorization: `Bearer ${idToken}` } : {}),
+            },
+            body: JSON.stringify(options?.body || {}),
+          });
+
+          const payload = await res.json().catch(() => ({ success: false }));
+          if (!res.ok) {
+            return {
+              data: payload,
+              error: new Error(payload?.error || `Push API failed (${res.status})`),
+            };
+          }
+          return { data: payload, error: null };
+        } catch (err: any) {
+          return {
+            data: { success: false },
+            error: err instanceof Error ? err : new Error(String(err)),
+          };
+        }
       }
 
       return { data: { success: true }, error: null };
