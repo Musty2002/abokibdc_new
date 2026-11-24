@@ -17,6 +17,8 @@ import {
 import { Button } from "@/components/ui/button";
 import ReviewCard, { AddReviewSheet } from "./ReviewCard";
 import { toast } from "@/hooks/use-toast";
+import { Capacitor } from "@capacitor/core";
+import { Browser } from "@capacitor/browser";
 import BranchLocationMap from "@/components/maps/BranchLocationMap";
 import { useAdminAuth } from "@/hooks/useAdminAuth";
 import { supabase } from "@/integrations/supabase/client";
@@ -92,12 +94,14 @@ const BranchDetailSheet = ({
     setTimeout(() => setCopied(false), 2000);
   };
 
-  const handleWhatsApp = () => {
+  const handleWhatsApp = async () => {
     const message = `Hello! I'm inquiring about exchange rates at ${branch.name}.`;
-    window.open(
-      `https://wa.me/${branch.whatsappNumber}?text=${encodeURIComponent(message)}`,
-      "_blank"
-    );
+    const url = `https://wa.me/${branch.whatsappNumber}?text=${encodeURIComponent(message)}`;
+    if (Capacitor.isNativePlatform()) {
+      await Browser.open({ url });
+    } else {
+      window.open(url, "_blank", "noopener,noreferrer");
+    }
   };
 
   return (
@@ -187,18 +191,21 @@ const BranchDetailSheet = ({
               </Button>
 
               {/* Interactive Google Map Guidance & Admin Pinning */}
-              <BranchLocationMap
-                branchId={branch.id}
-                branchName={branch.name}
-                address={branch.address}
-                city={branch.city}
-                operatingHours={branch.operatingHours}
-                latitude={branch.latitude}
-                longitude={branch.longitude}
-                canAdminEditInline={canEditLocation}
-                onSaveLocation={handleSaveBranchLocation}
-                heightClass="h-44"
-              />
+              {open && (
+                <BranchLocationMap
+                  key={branch.id}
+                  branchId={branch.id}
+                  branchName={branch.name}
+                  address={branch.address}
+                  city={branch.city}
+                  operatingHours={branch.operatingHours}
+                  latitude={branch.latitude}
+                  longitude={branch.longitude}
+                  canAdminEditInline={canEditLocation}
+                  onSaveLocation={handleSaveBranchLocation}
+                  heightPx={220}
+                />
+              )}
 
               {/* Exchange Rates */}
               <div>

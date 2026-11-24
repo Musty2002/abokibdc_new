@@ -481,18 +481,18 @@ export default function AbokiWebsite() {
             </button>
             <button
               type="button"
-              onClick={() => scrollToSection("branches-section")}
-              className="hover:text-red-600 transition-colors uppercase tracking-wide"
-            >
-              Branches
-            </button>
-            <button
-              type="button"
               onClick={() => scrollToSection("travels-section")}
               className="hover:text-red-600 transition-colors uppercase tracking-wide flex items-center gap-1 text-red-600"
             >
               <Moon className="w-3.5 h-3.5" />
               Travels & Umrah
+            </button>
+            <button
+              type="button"
+              onClick={() => scrollToSection("branches-section")}
+              className="hover:text-red-600 transition-colors uppercase tracking-wide"
+            >
+              Branches
             </button>
             <button
               type="button"
@@ -546,8 +546,8 @@ export default function AbokiWebsite() {
               { label: "HOME", id: "hero-section" },
               { label: "ABOUT", id: "about-section" },
               { label: "RATES", id: "rates-section" },
-              { label: "BRANCHES", id: "branches-section" },
               { label: "TRAVELS & UMRAH", id: "travels-section" },
+              { label: "BRANCHES", id: "branches-section" },
               { label: "FAQ", id: "faq-section" },
               { label: "NEWS", id: "news-section" },
             ].map((item) => (
@@ -949,201 +949,6 @@ export default function AbokiWebsite() {
         </div>
       </section>
 
-      {/* ==================== DOWNLOAD APP BANNER (Kadoo BDC Download App Area) ==================== */}
-      <section className="bg-gradient-to-r from-red-700 via-red-600 to-slate-950 text-white py-12">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col lg:flex-row items-center justify-between gap-8">
-          <div className="space-y-2 max-w-2xl text-center lg:text-left">
-            <span className="inline-block text-xs font-extrabold uppercase tracking-widest text-amber-300">
-              Mobile Experience • Android & iOS
-            </span>
-            <h2 className="text-2xl sm:text-3xl font-['Playfair_Display',Georgia,serif] font-black leading-snug">
-              Explore Exchange Rates From 30+ Countries Worldwide, Download The "ABOKI BUREAU DE CHANGE APPLICATION"
-            </h2>
-            <p className="text-xs sm:text-sm text-red-100">
-              Track real-time BDC & CBN rates, set custom target rate alerts, locate branches on Google Maps, and book Umrah & flights on the go.
-            </p>
-          </div>
-
-          <div className="flex flex-wrap items-center justify-center gap-3 shrink-0">
-            <a
-              href="https://play.google.com/store"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="px-5 py-3 rounded-xl bg-white text-slate-950 hover:bg-slate-100 text-xs sm:text-sm font-extrabold uppercase tracking-wider shadow-lg flex items-center gap-2"
-            >
-              Google Play Store
-            </a>
-            <a
-              href="https://apps.apple.com"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="px-5 py-3 rounded-xl bg-slate-900/90 hover:bg-slate-900 text-white border border-white/20 text-xs sm:text-sm font-extrabold uppercase tracking-wider flex items-center gap-2"
-            >
-              Apple App Store
-            </a>
-          </div>
-        </div>
-      </section>
-
-      {/* ==================== BRANCHES DIRECTORY ("Creating Endless Smiles" - Kadoo Product Area) ==================== */}
-      <section id="branches-section" className="py-16 bg-slate-50 border-b border-slate-200">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-8">
-          <div className="text-center max-w-3xl mx-auto space-y-3">
-            <span className="text-xs font-extrabold uppercase tracking-widest text-red-600">
-              Nationwide Branch Network
-            </span>
-            <h2 className="text-3xl sm:text-4xl font-['Playfair_Display',Georgia,serif] font-black text-slate-900">
-              Creating Endless Smiles
-            </h2>
-            <p className="text-sm sm:text-base text-slate-600 leading-relaxed">
-              Make a smooth and safe exchange at your nearest branch today.{" "}
-              <strong className="text-slate-900">ABOKI BUREAU DE CHANGE</strong>{" "}
-              strives to attain customer delight and excellent customer experience in foreign currency exchange across major regions in Nigeria.{" "}
-              <strong className="text-red-600">
-                ABOKI BUREAU DE CHANGE, we're just a call away.
-              </strong>
-            </p>
-          </div>
-
-          {/* Kadoo-style City Filter Tabs */}
-          <div className="flex flex-wrap items-center justify-center gap-2">
-            <button
-              type="button"
-              onClick={() => setSelectedCityFilter("ALL")}
-              className={`px-4 py-2 rounded-lg text-xs font-extrabold uppercase tracking-wider transition-all ${
-                selectedCityFilter === "ALL"
-                  ? "bg-red-600 text-white shadow-sm"
-                  : "bg-white text-slate-700 border border-slate-200 hover:border-red-300"
-              }`}
-            >
-              All ({allBranches.length})
-            </button>
-            {cityGroups.map((group) => (
-              <button
-                key={group.city}
-                type="button"
-                onClick={() => setSelectedCityFilter(group.city)}
-                className={`px-4 py-2 rounded-lg text-xs font-extrabold uppercase tracking-wider transition-all ${
-                  selectedCityFilter === group.city
-                    ? "bg-red-600 text-white shadow-sm"
-                    : "bg-white text-slate-700 border border-slate-200 hover:border-red-300"
-                }`}
-              >
-                {group.city} ({group.branches.length})
-              </button>
-            ))}
-          </div>
-
-          {/* Branch Cards Grid (Kadoo BDC Branch Cards + Live Rates & Google Map Trigger) */}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {filteredBranches.map((branch) => {
-              const topCurrencies = branch.currencies.slice(0, 3);
-              return (
-                <div
-                  key={branch.id}
-                  className="bg-white rounded-2xl border border-slate-200 shadow-xs hover:shadow-md hover:border-red-300 transition-all overflow-hidden flex flex-col justify-between"
-                >
-                  <div className="p-5 space-y-3">
-                    <div className="flex items-start justify-between gap-2">
-                      <div>
-                        <span className="inline-block text-[10px] font-extrabold uppercase tracking-wider px-2 py-0.5 rounded bg-red-50 text-red-700 border border-red-200 mb-1">
-                          {branch.city}
-                        </span>
-                        <h3 className="text-base font-extrabold text-slate-900 uppercase">
-                          {branch.name}
-                        </h3>
-                      </div>
-                      <div className="flex items-center gap-1 text-xs font-bold text-amber-600 bg-amber-50 px-2 py-1 rounded-md">
-                        <Star className="w-3.5 h-3.5 fill-amber-400 text-amber-400" />
-                        {branch.rating}
-                      </div>
-                    </div>
-
-                    <div className="space-y-1.5 text-xs text-slate-600 pt-1 border-t border-slate-100">
-                      <p className="flex items-start gap-2">
-                        <Phone className="w-3.5 h-3.5 text-red-600 shrink-0 mt-0.5" />
-                        <span>
-                          <strong className="text-slate-800">Phone Number:</strong>{" "}
-                          {branch.whatsappNumber || "+2347064937199"}
-                        </span>
-                      </p>
-                      <p className="flex items-start gap-2">
-                        <MapPin className="w-3.5 h-3.5 text-red-600 shrink-0 mt-0.5" />
-                        <span>
-                          <strong className="text-slate-800">Branch Location:</strong>{" "}
-                          {branch.address}
-                        </span>
-                      </p>
-                      <p className="flex items-start gap-2">
-                        <Clock className="w-3.5 h-3.5 text-red-600 shrink-0 mt-0.5" />
-                        <span>
-                          <strong className="text-slate-800">Hours:</strong>{" "}
-                          {branch.operatingHours}
-                        </span>
-                      </p>
-                    </div>
-
-                    {/* Mini Live Rate Preview */}
-                    {topCurrencies.length > 0 && (
-                      <div className="bg-slate-50 rounded-xl p-2.5 border border-slate-100 space-y-1">
-                        <div className="grid grid-cols-3 text-[10px] font-bold uppercase text-slate-400 pb-1 border-b border-slate-200">
-                          <span>Currency</span>
-                          <span className="text-center">Buy</span>
-                          <span className="text-center">Sell</span>
-                        </div>
-                        {topCurrencies.map((c, i) => (
-                          <div
-                            key={`${c.code}-${i}`}
-                            className="grid grid-cols-3 text-xs font-semibold py-0.5"
-                          >
-                            <span className="font-bold text-slate-800">
-                              {c.code}
-                            </span>
-                            <span className="text-center text-emerald-600">
-                              ₦{c.buyRate.toLocaleString()}
-                            </span>
-                            <span className="text-center text-red-600">
-                              ₦{c.sellRate.toLocaleString()}
-                            </span>
-                          </div>
-                        ))}
-                      </div>
-                    )}
-                  </div>
-
-                  <div className="px-5 py-3 bg-slate-50 border-t border-slate-100 flex items-center justify-between gap-2">
-                    <button
-                      type="button"
-                      onClick={() => handleOpenBranchMap(branch)}
-                      className="flex-1 py-2 px-3 rounded-lg bg-slate-900 hover:bg-slate-800 text-white text-xs font-bold flex items-center justify-center gap-1.5 transition-colors"
-                    >
-                      <MapPin className="w-3.5 h-3.5 text-red-400" />
-                      Google Map & All Rates
-                    </button>
-
-                    <a
-                      href={`https://wa.me/${branch.whatsappNumber.replace(
-                        /[^0-9]/g,
-                        ""
-                      )}?text=${encodeURIComponent(
-                        `Hello ${branch.name}! I'm inquiring about today's exchange rates.`
-                      )}`}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="py-2 px-3 rounded-lg bg-green-600 hover:bg-green-700 text-white text-xs font-bold flex items-center justify-center gap-1"
-                      title="WhatsApp Branch"
-                    >
-                      <MessageCircle className="w-3.5 h-3.5" />
-                      WhatsApp
-                    </a>
-                  </div>
-                </div>
-              );
-            })}
-          </div>
-        </div>
-      </section>
-
       {/* ==================== ABOKI BDC TRAVELS & UMRAH SECTION ==================== */}
       <section
         id="travels-section"
@@ -1339,6 +1144,201 @@ export default function AbokiWebsite() {
           {/* Dedicated Travel & Umrah Booking Form */}
           <div id="travel-booking-form" className="pt-2">
             <TravelBookingForm source="website" variant="website" />
+          </div>
+        </div>
+      </section>
+
+      {/* ==================== DOWNLOAD APP BANNER (Kadoo BDC Download App Area) ==================== */}
+      <section className="bg-gradient-to-r from-red-700 via-red-600 to-slate-950 text-white py-12">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col lg:flex-row items-center justify-between gap-8">
+          <div className="space-y-2 max-w-2xl text-center lg:text-left">
+            <span className="inline-block text-xs font-extrabold uppercase tracking-widest text-amber-300">
+              Mobile Experience • Android & iOS
+            </span>
+            <h2 className="text-2xl sm:text-3xl font-['Playfair_Display',Georgia,serif] font-black leading-snug">
+              Explore Exchange Rates From 30+ Countries Worldwide, Download The "ABOKI BUREAU DE CHANGE APPLICATION"
+            </h2>
+            <p className="text-xs sm:text-sm text-red-100">
+              Track real-time BDC & CBN rates, set custom target rate alerts, locate branches on Google Maps, and book Umrah & flights on the go.
+            </p>
+          </div>
+
+          <div className="flex flex-wrap items-center justify-center gap-3 shrink-0">
+            <a
+              href="https://play.google.com/store"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="px-5 py-3 rounded-xl bg-white text-slate-950 hover:bg-slate-100 text-xs sm:text-sm font-extrabold uppercase tracking-wider shadow-lg flex items-center gap-2"
+            >
+              Google Play Store
+            </a>
+            <a
+              href="https://apps.apple.com"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="px-5 py-3 rounded-xl bg-slate-900/90 hover:bg-slate-900 text-white border border-white/20 text-xs sm:text-sm font-extrabold uppercase tracking-wider flex items-center gap-2"
+            >
+              Apple App Store
+            </a>
+          </div>
+        </div>
+      </section>
+
+      {/* ==================== BRANCHES DIRECTORY ("Creating Endless Smiles" - Kadoo Product Area) ==================== */}
+      <section id="branches-section" className="py-16 bg-slate-50 border-b border-slate-200">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-8">
+          <div className="text-center max-w-3xl mx-auto space-y-3">
+            <span className="text-xs font-extrabold uppercase tracking-widest text-red-600">
+              Nationwide Branch Network
+            </span>
+            <h2 className="text-3xl sm:text-4xl font-['Playfair_Display',Georgia,serif] font-black text-slate-900">
+              Creating Endless Smiles
+            </h2>
+            <p className="text-sm sm:text-base text-slate-600 leading-relaxed">
+              Make a smooth and safe exchange at your nearest branch today.{" "}
+              <strong className="text-slate-900">ABOKI BUREAU DE CHANGE</strong>{" "}
+              strives to attain customer delight and excellent customer experience in foreign currency exchange across major regions in Nigeria.{" "}
+              <strong className="text-red-600">
+                ABOKI BUREAU DE CHANGE, we're just a call away.
+              </strong>
+            </p>
+          </div>
+
+          {/* Kadoo-style City Filter Tabs */}
+          <div className="flex flex-wrap items-center justify-center gap-2">
+            <button
+              type="button"
+              onClick={() => setSelectedCityFilter("ALL")}
+              className={`px-4 py-2 rounded-lg text-xs font-extrabold uppercase tracking-wider transition-all ${
+                selectedCityFilter === "ALL"
+                  ? "bg-red-600 text-white shadow-sm"
+                  : "bg-white text-slate-700 border border-slate-200 hover:border-red-300"
+              }`}
+            >
+              All ({allBranches.length})
+            </button>
+            {cityGroups.map((group) => (
+              <button
+                key={group.city}
+                type="button"
+                onClick={() => setSelectedCityFilter(group.city)}
+                className={`px-4 py-2 rounded-lg text-xs font-extrabold uppercase tracking-wider transition-all ${
+                  selectedCityFilter === group.city
+                    ? "bg-red-600 text-white shadow-sm"
+                    : "bg-white text-slate-700 border border-slate-200 hover:border-red-300"
+                }`}
+              >
+                {group.city} ({group.branches.length})
+              </button>
+            ))}
+          </div>
+
+          {/* Branch Cards Grid (Kadoo BDC Branch Cards + Live Rates & Google Map Trigger) */}
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {filteredBranches.map((branch) => {
+              const topCurrencies = branch.currencies.slice(0, 3);
+              return (
+                <div
+                  key={branch.id}
+                  className="bg-white rounded-2xl border border-slate-200 shadow-xs hover:shadow-md hover:border-red-300 transition-all overflow-hidden flex flex-col justify-between"
+                >
+                  <div className="p-5 space-y-3">
+                    <div className="flex items-start justify-between gap-2">
+                      <div>
+                        <span className="inline-block text-[10px] font-extrabold uppercase tracking-wider px-2 py-0.5 rounded bg-red-50 text-red-700 border border-red-200 mb-1">
+                          {branch.city}
+                        </span>
+                        <h3 className="text-base font-extrabold text-slate-900 uppercase">
+                          {branch.name}
+                        </h3>
+                      </div>
+                      <div className="flex items-center gap-1 text-xs font-bold text-amber-600 bg-amber-50 px-2 py-1 rounded-md">
+                        <Star className="w-3.5 h-3.5 fill-amber-400 text-amber-400" />
+                        {branch.rating}
+                      </div>
+                    </div>
+
+                    <div className="space-y-1.5 text-xs text-slate-600 pt-1 border-t border-slate-100">
+                      <p className="flex items-start gap-2">
+                        <Phone className="w-3.5 h-3.5 text-red-600 shrink-0 mt-0.5" />
+                        <span>
+                          <strong className="text-slate-800">Phone Number:</strong>{" "}
+                          {branch.whatsappNumber || "+2347064937199"}
+                        </span>
+                      </p>
+                      <p className="flex items-start gap-2">
+                        <MapPin className="w-3.5 h-3.5 text-red-600 shrink-0 mt-0.5" />
+                        <span>
+                          <strong className="text-slate-800">Branch Location:</strong>{" "}
+                          {branch.address}
+                        </span>
+                      </p>
+                      <p className="flex items-start gap-2">
+                        <Clock className="w-3.5 h-3.5 text-red-600 shrink-0 mt-0.5" />
+                        <span>
+                          <strong className="text-slate-800">Hours:</strong>{" "}
+                          {branch.operatingHours}
+                        </span>
+                      </p>
+                    </div>
+
+                    {/* Mini Live Rate Preview */}
+                    {topCurrencies.length > 0 && (
+                      <div className="bg-slate-50 rounded-xl p-2.5 border border-slate-100 space-y-1">
+                        <div className="grid grid-cols-3 text-[10px] font-bold uppercase text-slate-400 pb-1 border-b border-slate-200">
+                          <span>Currency</span>
+                          <span className="text-center">Buy</span>
+                          <span className="text-center">Sell</span>
+                        </div>
+                        {topCurrencies.map((c, i) => (
+                          <div
+                            key={`${c.code}-${i}`}
+                            className="grid grid-cols-3 text-xs font-semibold py-0.5"
+                          >
+                            <span className="font-bold text-slate-800">
+                              {c.code}
+                            </span>
+                            <span className="text-center text-emerald-600">
+                              ₦{c.buyRate.toLocaleString()}
+                            </span>
+                            <span className="text-center text-red-600">
+                              ₦{c.sellRate.toLocaleString()}
+                            </span>
+                          </div>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+
+                  <div className="px-5 py-3 bg-slate-50 border-t border-slate-100 flex items-center justify-between gap-2">
+                    <button
+                      type="button"
+                      onClick={() => handleOpenBranchMap(branch)}
+                      className="flex-1 py-2 px-3 rounded-lg bg-slate-900 hover:bg-slate-800 text-white text-xs font-bold flex items-center justify-center gap-1.5 transition-colors"
+                    >
+                      <MapPin className="w-3.5 h-3.5 text-red-400" />
+                      Google Map & All Rates
+                    </button>
+
+                    <a
+                      href={`https://wa.me/${branch.whatsappNumber.replace(
+                        /[^0-9]/g,
+                        ""
+                      )}?text=${encodeURIComponent(
+                        `Hello ${branch.name}! I'm inquiring about today's exchange rates.`
+                      )}`}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="py-2 px-3 rounded-lg bg-green-600 hover:bg-green-700 text-white text-xs font-bold flex items-center justify-center gap-1"
+                      title="WhatsApp Branch"
+                    >
+                      <MessageCircle className="w-3.5 h-3.5" />
+                      WhatsApp
+                    </a>
+                  </div>
+                </div>
+              );
+            })}
           </div>
         </div>
       </section>
