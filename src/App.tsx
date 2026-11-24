@@ -7,6 +7,9 @@ import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { Capacitor } from "@capacitor/core";
 import Index from "./pages/Index";
 import AbokiWebsite from "./pages/website/AbokiWebsite";
+import PrivacyPolicyPage from "./pages/website/PrivacyPolicyPage";
+import TermsOfServicePage from "./pages/website/TermsOfServicePage";
+import ContactUsPage from "./pages/website/ContactUsPage";
 import NotFound from "./pages/NotFound";
 
 // Admin pages
@@ -150,7 +153,47 @@ const App = () => {
                     path="/contact-us"
                     element={
                       <SubdomainGuard>
-                        <AbokiWebsite />
+                        <ContactUsPage />
+                      </SubdomainGuard>
+                    }
+                  />
+                  <Route
+                    path="/contact"
+                    element={
+                      <SubdomainGuard>
+                        <ContactUsPage />
+                      </SubdomainGuard>
+                    }
+                  />
+                  <Route
+                    path="/privacy-policy"
+                    element={
+                      <SubdomainGuard>
+                        <PrivacyPolicyPage />
+                      </SubdomainGuard>
+                    }
+                  />
+                  <Route
+                    path="/privacy"
+                    element={
+                      <SubdomainGuard>
+                        <PrivacyPolicyPage />
+                      </SubdomainGuard>
+                    }
+                  />
+                  <Route
+                    path="/terms-of-service"
+                    element={
+                      <SubdomainGuard>
+                        <TermsOfServicePage />
+                      </SubdomainGuard>
+                    }
+                  />
+                  <Route
+                    path="/terms"
+                    element={
+                      <SubdomainGuard>
+                        <TermsOfServicePage />
                       </SubdomainGuard>
                     }
                   />
@@ -187,7 +230,6 @@ const App = () => {
                     <Route path="notifications" element={<AdminNotifications />} />
                     <Route path="branch-admins" element={<AdminBranchAdmins />} />
                     <Route path="my-branch" element={<AdminMyBranch />} />
-                    <Route path="travel-inquiries" element={<AdminTravelInquiries />} />
                     <Route path="settings" element={<AdminSettings />} />
                   </Route>
 

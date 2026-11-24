@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback, useMemo } from "react";
-import { useLocation } from "react-router-dom";
+import { useLocation, Link } from "react-router-dom";
 import {
   Phone,
   Mail,
@@ -508,13 +508,12 @@ export default function AbokiWebsite() {
             >
               News
             </button>
-            <button
-              type="button"
-              onClick={() => scrollToSection("contact-section")}
+            <Link
+              to="/contact-us"
               className="hover:text-red-600 transition-colors uppercase tracking-wide"
             >
               Contact
-            </button>
+            </Link>
           </nav>
 
           {/* CTA Button: MAKE AN APPOINTMENT */}
@@ -551,7 +550,6 @@ export default function AbokiWebsite() {
               { label: "TRAVELS & UMRAH", id: "travels-section" },
               { label: "FAQ", id: "faq-section" },
               { label: "NEWS", id: "news-section" },
-              { label: "CONTACT", id: "contact-section" },
             ].map((item) => (
               <button
                 key={item.id}
@@ -562,6 +560,29 @@ export default function AbokiWebsite() {
                 {item.label}
               </button>
             ))}
+            <div className="pt-2 mt-2 border-t border-slate-100 space-y-1">
+              <Link
+                to="/contact-us"
+                onClick={() => setMobileMenuOpen(false)}
+                className="block w-full text-left px-3 py-2.5 rounded-lg text-sm font-bold text-slate-800 hover:bg-red-50 hover:text-red-600"
+              >
+                CONTACT US
+              </Link>
+              <Link
+                to="/privacy-policy"
+                onClick={() => setMobileMenuOpen(false)}
+                className="block w-full text-left px-3 py-2.5 rounded-lg text-sm font-bold text-slate-600 hover:bg-red-50 hover:text-red-600"
+              >
+                PRIVACY POLICY
+              </Link>
+              <Link
+                to="/terms-of-service"
+                onClick={() => setMobileMenuOpen(false)}
+                className="block w-full text-left px-3 py-2.5 rounded-lg text-sm font-bold text-slate-600 hover:bg-red-50 hover:text-red-600"
+              >
+                TERMS OF SERVICE
+              </Link>
+            </div>
           </div>
         )}
       </header>
@@ -1689,10 +1710,10 @@ export default function AbokiWebsite() {
               </ul>
             </div>
 
-            {/* Column 3: QUICK LINKS */}
+            {/* Column 3: QUICK LINKS & LEGAL */}
             <div className="space-y-3">
               <h4 className="text-xs font-extrabold uppercase tracking-widest text-white">
-                Quick Links
+                Quick Links & Legal
               </h4>
               <div className="grid grid-cols-2 gap-2 text-xs font-semibold">
                 <button
@@ -1730,21 +1751,43 @@ export default function AbokiWebsite() {
                 >
                   Travels & Umrah
                 </button>
-                <button
-                  type="button"
-                  onClick={() => scrollToSection("contact-section")}
+                <Link
+                  to="/contact-us"
                   className="text-left text-slate-400 hover:text-white"
                 >
                   Contact Us
-                </button>
+                </Link>
+                <Link
+                  to="/privacy-policy"
+                  className="text-left text-slate-400 hover:text-white"
+                >
+                  Privacy Policy
+                </Link>
+                <Link
+                  to="/terms-of-service"
+                  className="text-left text-slate-400 hover:text-white"
+                >
+                  Terms of Service
+                </Link>
               </div>
             </div>
           </div>
 
-          <div className="pt-6 text-center text-xs text-slate-500">
+          <div className="pt-6 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs text-slate-500">
             <p>
               Copyright © {new Date().getFullYear()} Aboki Bureau De Change | All Rights Reserved.
             </p>
+            <div className="flex items-center gap-4">
+              <Link to="/privacy-policy" className="hover:text-slate-300">
+                Privacy Policy
+              </Link>
+              <Link to="/terms-of-service" className="hover:text-slate-300">
+                Terms of Service
+              </Link>
+              <Link to="/contact-us" className="hover:text-slate-300">
+                Contact Us
+              </Link>
+            </div>
           </div>
         </div>
       </footer>

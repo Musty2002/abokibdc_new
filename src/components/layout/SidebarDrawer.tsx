@@ -1,9 +1,10 @@
-import { Phone, Mail, MessageCircle, Info, Share2, Star, Shield, Bell } from "lucide-react";
+import { Phone, Mail, MessageCircle, Info, Share2, Star, Shield, Bell, FileText } from "lucide-react";
 import { Sheet, SheetContent, SheetHeader, SheetTitle } from "@/components/ui/sheet";
 import { Capacitor } from "@capacitor/core";
 import { Share } from "@capacitor/share";
 import { Browser } from "@capacitor/browser";
 import { Haptics, ImpactStyle } from "@capacitor/haptics";
+import { useNavigate } from "react-router-dom";
 import abokiLogo from "@/assets/aboki-logo.jpg";
 import { toast } from "@/hooks/use-toast";
 
@@ -20,11 +21,13 @@ const menuItems = [
   { icon: Share2, label: "Share App", action: "share" },
   { icon: Star, label: "Rate Us", action: "rate" },
   { icon: Shield, label: "Privacy Policy", action: "privacy" },
+  { icon: FileText, label: "Terms of Service", action: "terms" },
   { icon: Info, label: "About Aboki", action: "about" },
 ];
 
 export function SidebarDrawer({ open, onOpenChange }: SidebarDrawerProps) {
   const isNative = Capacitor.isNativePlatform();
+  const navigate = useNavigate();
 
   const triggerHaptic = async () => {
     if (isNative) {
@@ -150,10 +153,18 @@ export function SidebarDrawer({ open, onOpenChange }: SidebarDrawerProps) {
         }
         break;
       case "privacy":
-        toast({
-          title: "Privacy Policy",
-          description: "Your data and rate alerts are protected under Aboki BDC privacy standards.",
-        });
+        if (isNative) {
+          await Browser.open({ url: "https://abokibdc.com.ng/privacy-policy" });
+        } else {
+          navigate("/privacy-policy");
+        }
+        break;
+      case "terms":
+        if (isNative) {
+          await Browser.open({ url: "https://abokibdc.com.ng/terms-of-service" });
+        } else {
+          navigate("/terms-of-service");
+        }
         break;
       case "about":
         toast({
